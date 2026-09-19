@@ -36,11 +36,14 @@ jobs:
           path: crash-ui-kit
 
       - name: Check out the ports
+        # The kit is a submodule of every port, cloned by its plain GitHub URL, so the
+        # token is attached to every github.com address rather than to one clone.
         run: |
           set -e
+          git config --global url."https://x-access-token:${PORTS_TOKEN}@github.com/".insteadOf "https://github.com/"
           for repo in goat-road explosive-fruits fish-master goat-gold fuel-run; do
             git clone --quiet --depth 1 --recurse-submodules --shallow-submodules \
-              "https://x-access-token:${PORTS_TOKEN}@github.com/SvyatoslavTeslyak/${repo}-pixi.git" "Pixi/${repo}"
+              "https://github.com/SvyatoslavTeslyak/${repo}-pixi.git" "Pixi/${repo}"
           done
         env:
           PORTS_TOKEN: ${{ secrets.PORTS_TOKEN }}
