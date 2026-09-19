@@ -1,0 +1,18 @@
+[
+  {
+    "name": "haitian_dirt",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "prompt": "Seamless top-down square ground texture for a Haitian road mobile arcade game. Dry compacted warm grey-brown EARTH and dusty gravel road, several clearly readable irregular POTHOLES with dark sunken centers and crumbling stony rims, worn tire ruts, patches of ochre dust, scattered tiny stones. Dirt dominates, NOT clean asphalt, not pavement. Rich hand-painted realistic-cartoon finish matching glossy cartoon vehicles, restrained contrast, warm tropical daylight. Ground fills entire square, consistent scale and illumination, seamlessly repeating opposing edges. No lane stripes, arrows, curb, vehicles, text, props, UI or perspective. Potholes small to medium, road remains passable.",
+    "asset_id": "a3fd54fe-0fdd-4576-851e-a8aed50ea68c",
+    "file": "assets/art/road/haitian_dirt.png"
+  },
+  {
+    "name": "haitian_sidewalk",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "prompt": "Single vertical modular Haitian roadside sidewalk environment tile for a top-down mobile arcade road game. Elevated overhead camera, no horizon, long axis vertical. Warm chipped stone pavement fills frame. CENTRAL 65 percent of width is OPEN WALKABLE PAVEMENT continuous from top to bottom, uncluttered for a goat character. Along LEFT outer edge only: lush palm fronds, colorful weathered turquoise wall fragments, hanging blue-red Haitian flag with small white central emblem, small wooden market crates full of mangoes and green fruit, a bright red blue yellow market umbrella near lower left. Along RIGHT narrow edge only: worn yellow-painted curb, sparse weeds and a small drain. Cheerful lived-in Haitian street, vivid tropical greens and accents, detailed realistic-cartoon rendering matching reference vehicle, bold silhouettes. Seamless top and bottom pavement continuation. No road lanes, no cars, no people, no UI, no labels, no framing or title. Full bleed image, no transparent background.",
+    "asset_id": "5c180b4e-e853-408c-b9ec-5a2f81459491",
+    "file": "assets/art/road/haitian_sidewalk.png"
+  }
+]

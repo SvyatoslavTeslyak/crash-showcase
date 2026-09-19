@@ -1,0 +1,169 @@
+{
+  "generated_date": "2026-09-17",
+  "effects": [
+    {
+      "file": "hoof.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "DjpWdfVrFV1ww9KEX1xV",
+      "flow_url": "https://elevenlabs.io/app/flows/E77cpiSOSXHkNFCiL27T",
+      "prompt": "A single short pair of small goat hoof clops on dry pavement, light rounded woody taps with a tiny gritty scuff, playful tactile mobile game movement sound. 0.35 seconds, isolated dry close sound, no voice, no music, no ambience, no ringing.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "source_trim_seconds": 0.44,
+        "tempo": 1,
+        "lowpass_hz": 3800,
+        "fade_edges": true
+      }
+    },
+    {
+      "file": "hit.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "mzZykRrt7w08iap9Uu5a",
+      "flow_url": "https://elevenlabs.io/app/flows/0CFEINoGKKNCHT7v7D0C",
+      "prompt": "One compact soft cartoon vehicle bump impact, muted rubbery thud and a short metal body rattle. Friendly arcade goat crossing game collision, 0.55 seconds, no harsh crash, no glass, no voice, no music, isolated dry sound.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "source_trim_seconds": 0.55,
+        "tempo": 1,
+        "lowpass_hz": 4000,
+        "fade_edges": true
+      }
+    },
+    {
+      "file": "splash.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "TTd4TuPgdGIdoyThJXGd",
+      "flow_url": "https://elevenlabs.io/app/flows/WG5ZZyE9j1lZLURy6UgO",
+      "prompt": "One small animal falling into water, a rounded plop and short gentle water splash with a few droplets. Compact playful mobile game effect, 0.65 seconds, isolated, no voice, no music, no ambience.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "source_trim_seconds": 0.9,
+        "tempo": 1.2,
+        "lowpass_hz": 6000,
+        "fade_edges": true
+      }
+    },
+    {
+      "file": "collapse.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "TjB3d1l4FeVvzSgb5ibo",
+      "flow_url": "https://elevenlabs.io/app/flows/Qos7k4NgZbyCdw7YSQuF",
+      "prompt": "One small wooden roof giving way under a goat: quick dry wood crack followed by a soft brief tumble of lightweight boards. Compact playful game falling sound, 0.75 seconds, no explosion, no voice, no music, no ambience.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "source_trim_seconds": 0.6,
+        "lowpass_hz": 4200,
+        "fade_edges": true
+      }
+    },
+    {
+      "file": "squash_dog.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "Q29JdG72f5JaA5XwH7gq",
+      "flow_url": "https://elevenlabs.io/app/flows/VTIDpElawZmLJ7SIc6Pr",
+      "prompt": "One very cute cartoon puppy surprise sound: a soft squishy pop followed by a tiny gentle high pitched woof. Playful rubber toy squash reaction, cheerful and harmless, 0.6 seconds. No distressed yelp, no growling, no violent impact, no music, isolated dry sound.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "source_segments_seconds": [
+          [
+            0,
+            0.49
+          ],
+          [
+            1.38,
+            1.73
+          ]
+        ],
+        "lowpass_hz": 4500,
+        "fade_edges": true
+      }
+    },
+    {
+      "file": "squash_goat.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "MNe3g51XmpTYoM1uQEcY",
+      "flow_url": "https://elevenlabs.io/app/flows/y2v0DAZ92XPSsOL0aT2q",
+      "prompt": "One very cute cartoon baby goat surprise sound: a soft squishy pop followed by a tiny gentle bleat, meh. Playful rubber toy squash reaction, cheerful and harmless, 0.6 seconds. No distressed cry, no harsh impact, no music, isolated dry sound.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "source_segments_seconds": [
+          [
+            0,
+            0.14
+          ],
+          [
+            0.78,
+            1.35
+          ]
+        ],
+        "lowpass_hz": 4500,
+        "fade_edges": true
+      }
+    },
+    {
+      "file": "squash_chicken.ogg",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "generation_id": "83Vn6kHnLQDbpr2WEeeB",
+      "flow_url": "https://elevenlabs.io/app/flows/vL2pgMrg7EKIq9mpuVq7",
+      "prompt": "One very cute cartoon chicken surprise sound: a soft squishy pop followed by a tiny bubbly cluck. Playful rubber toy squash reaction, cheerful and harmless, 0.6 seconds. No distressed scream, no harsh impact, no music, isolated dry sound.",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 24000,
+        "codec": "Vorbis",
+        "quality": 2,
+        "gain": 0.6,
+        "lowpass_hz": 4500,
+        "fade_edges": true,
+        "source_segments_seconds": [
+          [
+            0.36,
+            0.66
+          ]
+        ],
+        "note": "Single quick cluck; removed opening pop and repeated cluck"
+      }
+    },
+    {
+      "file": "hop_0.wav … hop_3.wav",
+      "provider": "ElevenLabs",
+      "model": "eleven_text_to_sound_v2",
+      "flow_url": "https://elevenlabs.io/app/flows/RZA8feIrtMBm5Krg2ejs",
+      "prompt": "A single soft muted pat, like a fingertip gently patting a small pillow, short soft felt tap with a warm mid tone, quiet and calm, no bass boom, no click, no whoosh, no spring, 0.15 seconds, subtle unobtrusive mobile game step sound, no voice, no animal, no music",
+      "processing": {
+        "channels": 1,
+        "sample_rate": 44100,
+        "codec": "PCM WAV",
+        "trimmed_seconds": 0.25,
+        "highpass_hz": 90,
+        "rms_db": -21,
+        "fade_edges": true
+      },
+      "note": "2026-09-17: soft universal step for every character (the earlier springy whoosh was too attention-grabbing). No highs above ~2 kHz, no animal voice. Four level-matched takes play in rotation at -15 dB. hoof.ogg stays for the safe arrival."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "stairs",
+    "prompt": "Detailed hand-painted realistic cartoon mobile game art, authentic Haitian coastal town, elevated orthographic overhead view, consistent with reference. No text, no UI, no people, no horizon. Vertical 9:16 courtyard tile. Warm worn limestone paving, broad stone stairs ASCENDING LEFT TO RIGHT across the exact middle horizontally, open walkable central path, weathered turquoise iron handrails only above and below path. Tropical clay pots, chipped pastel walls at top and bottom, subtle bougainvillea. Rich textured believable masonry, not flat vectors. Full bleed.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "asset_id": "2ada2400-d31c-4917-aab4-5fc38e8337c4"
+  },
+  {
+    "name": "pier",
+    "prompt": "Detailed hand-painted realistic cartoon mobile game art, authentic Haitian coastal town, elevated orthographic overhead view, consistent with reference. No text, no UI, no people, no horizon. Vertical 9:16 environment tile: narrow weathered wooden fishing pier running vertically center 70% width, turquoise Caribbean water at both edges, sunbleached detailed planks, rope and mooring posts, nets and fish crates only at far top and bottom leaving center empty walkable. Seamless top bottom. Full bleed.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "asset_id": "26a5c098-8c77-4972-9c0e-4eb66ca33a74"
+  },
+  {
+    "name": "water",
+    "prompt": "Detailed hand-painted realistic cartoon mobile game art, authentic Haitian coastal town, elevated orthographic overhead view, consistent with reference. No text, no UI, no people, no horizon. Seamless 9:16 Caribbean harbor water texture only, deep teal turquoise gentle ripples and sunlit caustics, calm small wavelets, no land no boats no objects. Low contrast readable game background full bleed.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "asset_id": "4eb0e154-c44a-49f8-bd77-a715741e104e"
+  },
+  {
+    "name": "boat",
+    "prompt": "Detailed hand-painted realistic cartoon mobile game art, authentic Haitian coastal town, elevated orthographic overhead view, consistent with reference. No text, no UI, no people, no horizon. One isolated small Haitian wooden fishing rowboat seen directly overhead, long axis vertical, entire hull in frame. Weathered turquoise hull with coral red trim, warm wooden benches and open floor in center for character to stand, small rope coil and fruit crates at bow only. No mast no sail. Transparent background, clean cutout, 9:16.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "asset_id": "9e735342-aa4e-4382-bcbf-a8eecb569bed"
+  }
+]

@@ -1,0 +1,335 @@
+@font-face{font-family:CrashBody;src:url('assets/fonts/Sora-SemiBold.ttf')}@font-face{font-family:CrashNumbers;src:url('assets/fonts/GoatNumerals-Bold.ttf')}
+.crash-ui,.crash-ui *{box-sizing:border-box}.crash-ui{font:var(--body-type-px)/1.4 CrashNumbers,CrashBody,sans-serif;font-synthesis:none;color:var(--text);position:fixed;inset:0;z-index:10;pointer-events:none;--edge:16px;--gap:16px;--button-radius:24px;--panel-radius:var(--web-panel-radius);--control-h:52px}.crash-ui button,.crash-ui input,.crash-ui select{font:inherit}.crash-ui button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.crash-ui button:focus-visible,.crash-ui input:focus-visible,.crash-ui select:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.crash-ui [hidden]{display:none!important}.crash-ui .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--panel-radius);padding:16px;box-shadow:0 5px 12px #0004;pointer-events:auto}.crash-ui .button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:var(--control-h);min-width:44px;padding:8px 12px;border-radius:var(--button-radius);border:2px solid #7693a780;color:var(--text);background:linear-gradient(var(--button-top),var(--button-bottom));box-shadow:inset 0 0 0 3px #96b6c025,0 5px 0 #061622;transition:filter .12s,transform .12s,box-shadow .12s;white-space:nowrap}.crash-ui .button:hover:not(:disabled){filter:brightness(1.12)}.crash-ui .button:active:not(:disabled){transform:translateY(4px);box-shadow:inset 0 0 0 3px #96b6c025,0 1px 0 #061622}.crash-ui button:disabled{cursor:default;opacity:.55}.crash-ui .button:disabled{background:#34434f;box-shadow:inset 0 4px 0 #061622;filter:none}.crash-ui .button[aria-pressed=true]{border-color:var(--focus)}.crash-ui .icon{width:24px;height:24px;object-fit:contain;flex:none}.crash-ui .chevron{display:block;width:var(--space-16);height:var(--space-16);flex:0 0 var(--space-16)}.crash-ui .money{font-family:CrashNumbers,CrashBody,sans-serif;font-size:24px;font-variant-numeric:tabular-nums}.crash-ui .muted{color:var(--text-muted);font-size:12px}.crash-ui .avatar{--index:5;width:36px;height:36px;flex:none;border-radius:50%;border:1px solid var(--gold);background-image:url('assets/avatars/players.png');background-size:300% 200%;background-position:var(--avatar-x,100%) var(--avatar-y,100%)}.crash-ui .top{position:absolute;left:var(--edge);right:var(--edge);top:max(var(--edge),env(safe-area-inset-top));display:flex;gap:16px;align-items:flex-start;pointer-events:none}.crash-ui .account{width:100%;min-width:0}.crash-ui .profile{display:flex;align-items:center;gap:12px}.crash-ui .identity{display:flex;align-items:center;gap:12px;border:0;background:none;color:inherit;text-align:left;padding:0;min-height:44px}.crash-ui .identity strong{display:block;font-size:20px}.crash-ui .level{color:var(--gold);font-size:12px}.crash-ui .balance{margin-left:auto;display:flex;gap:8px;align-items:center;min-width:0}.crash-ui .balance .money{font-size:clamp(20px,5vw,28px)}.crash-ui .icon-button{width:44px;height:44px;border:0;background:none;color:inherit;padding:8px;flex:none}.crash-ui .records{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:16px;padding:12px;margin-top:12px;background:var(--surface-inset);border:1px solid var(--border);border-radius:24px}.crash-ui .record{display:flex;gap:8px;align-items:flex-start;min-width:0}.crash-ui .record .icon{width:24px;height:24px}.crash-ui .record-title{font-size:12px;color:var(--text-muted)}.crash-ui .record-value{font-size:20px;color:var(--success)}.crash-ui .record-top{display:flex;gap:16px;flex-wrap:wrap;align-items:center;min-width:0}.crash-ui .record-top .record-value{color:var(--gold)}.crash-ui .owner{display:flex;gap:8px;align-items:center;min-width:0;flex:1 1 120px}.crash-ui .owner .avatar{width:28px;height:28px}.crash-ui .owner-name{font-size:12px;overflow-wrap:anywhere}.crash-ui .owner-date{font:12px CrashBody,sans-serif;color:var(--text-muted);white-space:nowrap}.crash-ui .winners{width:100%;margin-top:12px}.crash-ui .wins-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:14px}.crash-ui .online{font-size:11px;color:var(--switch-on);display:flex;align-items:center;gap:6px;white-space:nowrap}.crash-ui .dot{width:7px;height:7px;border-radius:50%;background:currentColor}.crash-ui .text-button{border:0;background:none;color:var(--text-muted);min-height:44px;padding:0 4px;margin-left:auto;font-size:12px}.crash-ui .wins-list{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}.crash-ui .winner{display:grid;grid-template-columns:28px minmax(64px,auto);gap:4px 8px;flex:1 0 128px;padding:8px;border:1px solid var(--border);border-radius:16px}.crash-ui .winner .avatar{width:28px;height:28px;grid-row:span 2}.crash-ui .winner-name{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.crash-ui .winner .money{color:var(--success);white-space:nowrap}.crash-ui .win-multiple{display:none}.crash-ui .history{display:flex;gap:8px;overflow:auto;scrollbar-width:none;margin-top:12px}.crash-ui .pill{border:1px solid var(--border);border-radius:24px;background:var(--surface-raised);color:var(--cyan);padding:6px 10px;font-family:CrashNumbers,CrashBody,sans-serif;white-space:nowrap}.crash-ui .bottom{position:absolute;left:var(--edge);right:var(--edge);bottom:max(var(--edge),env(safe-area-inset-bottom));pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:12px}.crash-ui .multiplier{min-width:120px;border:2px solid var(--multiplier-color,var(--cyan));border-radius:32px;background:var(--surface);text-align:center;font:28px CrashNumbers,CrashBody,sans-serif;color:var(--multiplier-color,var(--cyan));padding:4px 20px}.crash-ui .controls{width:100%;max-width:1280px;display:grid;gap:16px}.crash-ui .settings-row{display:grid;grid-template-columns:112px 1fr;gap:12px}.crash-ui .auto{background:var(--switch-off);border-radius:40px;padding:6px 10px 6px 6px;justify-content:flex-start}.crash-ui .knob{height:32px;width:32px;border-radius:50%;background:var(--knob);flex:none}.crash-ui .auto[aria-pressed=true]{background:var(--switch-on);color:var(--on-success)}.crash-ui .stake{display:grid;grid-template-columns:44px 44px minmax(64px,1fr) 44px 44px;gap:8px;align-items:center}.crash-ui .stake .money{text-align:center;font-size:22px;min-width:0}.crash-ui .stake .button{padding:4px;font-size:14px}.crash-ui .presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.crash-ui .presets .button{min-width:0}.crash-ui .actions{display:flex;gap:12px;min-width:0}.crash-ui .action{flex:1;min-width:0;min-height:76px;flex-direction:column;gap:4px;font-size:22px;border-radius:32px;color:var(--on-go);border-color:var(--action-go-edge);background:linear-gradient(var(--action-go-top),var(--action-go-bottom));box-shadow:inset 0 0 0 3px #eaffc940,0 5px 0 #006a2b}.crash-ui .action.cash{background:linear-gradient(var(--action-cash-top),var(--action-cash-bottom));border-color:var(--action-cash-edge);color:var(--on-cash);box-shadow:inset 0 0 0 3px #fff8d440,0 5px 0 #90600b}.crash-ui .action-title{display:flex;align-items:center;justify-content:center;gap:10px}.crash-ui .action .money,.crash-ui .action small{font-size:18px;line-height:1.15}.crash-ui .action .icon{width:22px;height:22px}.crash-ui .modal-layer{position:fixed;inset:0;z-index:30;background:#000a;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:auto;touch-action:pan-y}.crash-ui .modal{width:min(100%,560px);max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;padding:24px;border-radius:40px;background:var(--surface);border:1px solid var(--border);box-shadow:0 12px 40px #0006}.crash-ui .modal header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.crash-ui .modal h2{font-size:24px;margin:0}.crash-ui .modal-body{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}.crash-ui .modal .button{min-height:52px}.crash-ui .setting{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:52px}.crash-ui .setting input[type=checkbox]{width:24px;height:24px;accent-color:var(--switch-on)}.crash-ui select{background:var(--button);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:12px;max-width:55%}.crash-ui .win-modal{text-align:center}.crash-ui .win-modal .win-coin{width:80px;height:80px;display:block;margin:auto}.crash-ui .win-total{font:48px CrashNumbers,CrashBody,sans-serif;color:var(--gold)}.crash-ui .toast{position:absolute;top:45%;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:24px;background:var(--surface);border:1px solid var(--border);pointer-events:none;text-align:center;max-width:90%}.crash-ui .dev{position:absolute;right:16px;top:var(--dev-top,260px);pointer-events:auto;min-height:44px;padding:8px 12px;border-radius:16px;background:#0d2032b0;border:1px solid var(--border);color:var(--text)}.crash-ui .confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}.crash-ui .confetti i{position:absolute;left:50%;top:45%;width:8px;height:12px;background:var(--gold);animation:celebrate 1.8s ease-out forwards;transform:rotate(var(--angle));border-radius:2px}.crash-ui .confetti i:nth-child(3n){background:var(--success)}.crash-ui .confetti i:nth-child(3n + 1){background:var(--cyan)}@keyframes celebrate{to{transform:translate(var(--x),var(--y)) rotate(480deg);opacity:0}}.crash-ui.reduced *{animation:none!important;transition:none!important}
+@media(max-width:__PHONE_MAX__px){.crash-ui{--edge:10px;--control-h:48px}.crash-ui .panel{padding:12px}.crash-ui .modal-layer:not(.is-win){align-items:flex-end}.crash-ui .account .records{gap:10px;padding:10px}.crash-ui .record .icon{width:18px;height:18px}.crash-ui .record-value{font-size:18px}.crash-ui .record-title{font-size:11px}.crash-ui .modal{padding:20px}.crash-ui .stake{grid-template-columns:40px 40px minmax(60px,1fr) 40px 40px}.crash-ui .stake .money{font-size:20px}.crash-ui .stake .button{min-width:40px}.crash-ui .balance .icon{width:20px;height:20px}}
+@media(min-width:__CRASH_MEDIUM_BREAKPOINT__px){.crash-ui .controls{grid-template-columns:minmax(300px,1fr) minmax(220px,.8fr)}.crash-ui .settings-row,.crash-ui .actions{grid-column:1/-1}.crash-ui .record-top{flex-wrap:nowrap}.crash-ui .record-title,.crash-ui .owner-name{font-size:14px}.crash-ui .record-value{font-size:24px}.crash-ui .winners{max-width:100%}}
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){.crash-ui .account{max-width:580px}.crash-ui .top>.winners{width:320px;margin:0 0 0 auto}.crash-ui .wins-list{display:block;max-height:280px;overflow:auto}.crash-ui .winner{display:grid;grid-template-columns:28px minmax(72px,1fr) 52px minmax(80px,auto);align-items:center;border:0;border-bottom:1px solid var(--border);border-radius:0;gap:8px;padding:12px 0}.crash-ui .winner:last-child{border:0}.crash-ui .winner .avatar{grid-row:auto}.crash-ui .win-multiple{display:block;font-family:CrashNumbers,CrashBody,sans-serif}.crash-ui .winner .money{text-align:right}.crash-ui .controls{display:flex;align-items:center;flex-wrap:wrap}.crash-ui .settings-row{display:flex;gap:12px;flex:0 0 196px}.crash-ui .settings-row>.button{flex:1}.crash-ui .auto{min-width:104px}.crash-ui .stake{flex:1 0 264px}.crash-ui .presets{flex:1 0 192px}.crash-ui .actions{flex:1 0 164px}.crash-ui .controls .actions{flex-basis:260px}.crash-ui .action{min-height:64px;font-size:20px}.crash-ui .controls{gap:16px}.crash-ui .history{max-width:540px}.crash-ui .online{font-size:12px}.crash-ui .record-title,.crash-ui .owner-name{font-size:14px}}
+@media(min-width:__CRASH_DESKTOP_BREAKPOINT__px){.crash-ui{--control-h:48px}.crash-ui .controls{padding:12px 16px}.crash-ui .action{min-height:60px}.crash-ui .record-title,.crash-ui .owner-name{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.crash-ui *{animation:none!important;transition:none!important}}
+/* A narrow phone that is also short: the live wins strip is what pushes the account
+   panel over half the screen, and the game has to have somewhere to be drawn. */
+@media(max-width:599px) and (max-height:700px){.crash-ui .winners{display:none}}@media(min-width:__CRASH_MEDIUM_BREAKPOINT__px) and (max-height:720px){.crash-ui .winners,.crash-ui .records{display:none}.crash-ui .top{right:auto;max-width:65%}.crash-ui .controls{gap:8px;padding:10px}.crash-ui .action{min-height:48px;font-size:20px}.crash-ui .multiplier{font-size:22px}.crash-ui .settings-row{grid-template-columns:100px 1fr}.crash-ui .controls{grid-template-columns:minmax(260px,1fr) minmax(200px,.8fr)}.crash-ui .settings-row{grid-column:1}.crash-ui .stake{grid-column:1;grid-row:2}.crash-ui .presets{grid-column:2;grid-row:1}.crash-ui .actions{grid-column:2;grid-row:2}.crash-ui .dev{top:16px}}
+/* Typography and surfaces follow the shipped HUD tokens. */
+.crash-ui .avatar{display:inline-block;vertical-align:middle}
+.crash-ui .records{background:var(--surface)}
+.crash-ui .action{position:relative;overflow:hidden}
+.crash-ui .action::before{content:"";position:absolute;left:6px;top:6px;width:22px;height:18px;border-top:5px solid #ffffdd66;border-left:5px solid #ffffdd66;border-top-left-radius:28px;pointer-events:none}
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){.crash-ui .identity strong{font-size:24px}.crash-ui .balance .money{font-size:32px}.crash-ui .level{font-size:14px}.crash-ui .top>.winners{width:380px}.crash-ui .wins-head{font-size:24px}.crash-ui .winner{grid-template-columns:32px minmax(80px,1fr) 56px minmax(92px,auto)}.crash-ui .winner .avatar{width:32px;height:32px}.crash-ui .owner-date{font-size:14px}.crash-ui .record-top{gap:24px}.crash-ui .records{padding:16px}.crash-ui .record{gap:12px}}
+/* Modal rows use the original flat surfaces, radio artwork and nested radii. */
+.crash-ui .modal{--modal-padding:var(--space-24);--modal-radius:var(--radius-48);padding:var(--modal-padding);border-radius:var(--modal-radius);max-width:560px}
+.crash-ui .modal-body{gap:var(--space-12)}
+.crash-ui .modal h2{font-size:var(--type-24)}
+.crash-ui .modal-description,.crash-ui .modal-note{margin:0;color:var(--text-muted);font-size:var(--body-type-px);line-height:1.5}
+.crash-ui .modal-note{font-size:var(--type-12)}
+.crash-ui .modal-section-title{font-size:var(--body-type-px);margin:var(--space-8) 0 0}
+.crash-ui .centered{text-align:center}
+.crash-ui .option-list{display:grid;gap:var(--space-8)}
+.crash-ui .radio-option{display:flex;align-items:center;gap:var(--space-16);width:100%;min-height:64px;padding:var(--space-12) var(--space-16);border:0;border-radius:max(0px,calc(var(--modal-radius) - var(--modal-padding)));background:transparent;color:var(--text);text-align:left}
+.crash-ui .radio-option[aria-checked=true]{background:rgba(46,92,117,.25)}
+.crash-ui .radio-option:hover{background:rgba(46,92,117,.35)}
+.crash-ui .radio-option:active{background:var(--surface-pressed)}
+.crash-ui .radio-marker{width:28px;height:28px;flex:none}
+.crash-ui .option-details{display:grid;gap:var(--space-4);min-width:0;flex:1}
+.crash-ui .option-title{font-size:var(--body-type-px)}
+.crash-ui .option-description,.crash-ui .option-caption{font-size:var(--type-12);color:var(--text-muted)}
+.crash-ui .option-reward{display:grid;gap:var(--space-4);text-align:right;flex:none}
+.crash-ui .option-reward .money{font-size:var(--type-24);color:var(--gold)}
+.crash-ui .option-caption{font-size:10px}
+.crash-ui .modal .flat-button{border:1px solid var(--border);background:var(--surface-raised);border-radius:max(0px,calc(var(--modal-radius) - var(--modal-padding)));box-shadow:none;white-space:normal}
+.crash-ui .modal .flat-button:hover{border-color:var(--focus);filter:none}
+.crash-ui .modal .flat-button:active{background:var(--surface-pressed);transform:none;box-shadow:none}
+.crash-ui .setting .flat-button{min-width:104px;max-width:50%}
+.crash-ui .setting input.switch{appearance:none;width:52px;height:44px;margin:0;flex:none;border:0;border-radius:var(--radius-16);background:url('assets/icons/toggle_off.svg') center/52px auto no-repeat;cursor:pointer}
+.crash-ui .setting input.switch:checked{background-image:url('assets/icons/toggle_on.svg')}
+.crash-ui .back-button{margin:0;text-align:left;color:var(--text)}
+@media(max-width:__PHONE_MAX__px){.crash-ui .modal{--modal-padding:var(--space-16);--modal-radius:var(--radius-32)}.crash-ui .radio-option{padding:var(--space-12) var(--space-8);gap:var(--space-12)}}
+
+.crash-ui .win-modal{background:var(--surface-raised);border:2px solid var(--gold)}.crash-ui .win-modal header{justify-content:center}.crash-ui .win-modal h2{color:var(--gold);font-size:var(--type-32)}.crash-ui .account-summary{display:flex;align-items:center;gap:var(--space-16)}.crash-ui .account-summary .avatar{width:48px;height:48px}.crash-ui .account-summary p{margin:0}.crash-ui .account-stat{color:var(--text)}.crash-ui .account-stat.success{color:var(--success)}.crash-ui .account-stat.gold{color:var(--gold)}
+
+/* Control geometry: compact, nested shapes rather than uniformly pill-shaped buttons. */
+.crash-ui .controls{
+ --panel-radius:var(--web-panel-radius);
+ --control-h:var(--web-control-height);
+ --control-padding:var(--web-control-padding);
+ --button-radius:max(0px,calc(var(--panel-radius) - var(--control-padding)));
+ padding:var(--control-padding);
+ gap:var(--web-control-gap);
+ max-width:var(--web-control-max-width);
+}
+.crash-ui .controls .button{
+ border-radius:var(--button-radius);
+ border:1px solid color-mix(in srgb,var(--button-edge) 65%,transparent);
+ box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--button-edge) 20%,transparent),0 var(--web-control-depth) 0 var(--button-shadow);
+}
+.crash-ui .controls .button[aria-pressed=true]{outline:2px solid var(--focus);outline-offset:-2px}
+.crash-ui .controls .auto{border-radius:var(--radius-pill);padding-block:var(--space-4)}
+.crash-ui .controls .stake{
+ grid-template-columns:minmax(var(--tap-min),1fr) var(--control-h) minmax(var(--web-control-amount-width),1.5fr) var(--control-h) minmax(var(--tap-min),1fr);
+ gap:var(--space-4);
+ padding:var(--space-8);
+ border:1px solid var(--border);
+ border-radius:var(--radius-24);
+ background:var(--surface-inset);
+ min-width:0;
+}
+.crash-ui .controls .stake .button{min-width:var(--tap-min);font-size:14px;padding:var(--space-4)}
+.crash-ui .controls .stake .money{font-size:var(--type-20)}
+.crash-ui .controls .settings-row,.crash-ui .controls .actions{gap:var(--web-control-gap)}
+.crash-ui .controls .presets{gap:var(--space-8);min-width:0}
+.crash-ui .controls .action{
+ min-height:var(--web-control-action-height);
+ border-radius:max(0px,calc(var(--panel-radius) - var(--control-padding)));
+ border-color:var(--action-go-edge);
+ box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--action-go-edge) 35%,transparent),0 var(--web-control-depth) 0 var(--action-go-shadow);
+ gap:var(--space-4);
+}
+.crash-ui .controls .action.cash{border-color:var(--action-cash-edge);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--action-cash-edge) 35%,transparent),0 var(--web-control-depth) 0 var(--cash-shadow)}
+.crash-ui .controls .button:active:not(:disabled){transform:translateY(var(--web-control-depth));box-shadow:inset 0 0 0 2px #96b6c025}
+.crash-ui .controls .button:disabled{box-shadow:inset 0 var(--web-control-depth) 0 #061622}
+.crash-ui .controls .action-title{line-height:1.2}
+.crash-ui .controls [data-slot=playIcon]{display:flex;align-items:center}
+@media(min-width:__CRASH_MEDIUM_BREAKPOINT__px){
+ .crash-ui .controls{grid-template-columns:minmax(294px,1.4fr) minmax(192px,1fr);align-items:center}
+}
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){
+ .crash-ui .controls{display:grid;grid-template-columns:212px minmax(306px,1fr) minmax(200px,.7fr) minmax(148px,.7fr)}
+ .crash-ui .controls .settings-row{grid-column:auto;grid-template-columns:100px minmax(0,1fr);display:grid;gap:var(--space-8)}
+ .crash-ui .controls .auto{min-width:0}
+ .crash-ui .controls .actions{grid-column:auto;align-self:stretch}
+ .crash-ui .controls .action{min-height:64px}
+ .crash-ui .controls>.settings-row,.crash-ui .controls>.stake,.crash-ui .controls>.presets,.crash-ui .controls>.actions{grid-column:auto;grid-row:auto}
+ .crash-ui .controls{grid-template-columns:212px minmax(306px,1fr) minmax(260px,.8fr)}
+ .crash-ui .controls .presets{grid-column:1/3}
+ .crash-ui .controls .actions{grid-column:3;grid-row:1/3}
+}
+@media(min-width:__CRASH_DESKTOP_BREAKPOINT__px){
+ .crash-ui .controls{grid-template-columns:212px minmax(306px,1fr) minmax(192px,.7fr) minmax(280px,1fr)}
+ .crash-ui .controls .presets,.crash-ui .controls .actions{grid-column:auto;grid-row:auto}
+}
+
+.crash-ui .win-coin-flight{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.crash-ui .win-coin-flight img{position:absolute;left:0;top:0;width:var(--web-win-coin-size);height:var(--web-win-coin-size);object-fit:contain;opacity:0;will-change:transform,opacity}
+
+.crash-ui .controls .stake [data-action=minus],.crash-ui .controls .stake [data-action=plus]{width:var(--control-h);height:var(--control-h);padding:0}
+
+/* Shared type hierarchy for live-win cards and record cards. */
+.crash-ui .winner-name,.crash-ui .record-title,.crash-ui .owner-name{font-size:var(--web-card-title-size);line-height:1.4}
+/* A winner row is one line of type: the name, the multiplier and the amount all share
+   the card title size, and tell themselves apart by colour. */
+.crash-ui .winner-name,.crash-ui .winner .money,.crash-ui .win-multiple{font-size:var(--web-card-title-size);line-height:1.4}
+.crash-ui .win-multiple{color:var(--text-muted)}
+.crash-ui .record-value{font-size:var(--web-card-amount-size);line-height:1.4}
+.crash-ui .winner{flex-basis:192px}
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){.crash-ui .winner{grid-template-columns:32px minmax(0,1fr) 48px minmax(112px,auto)}}
+.crash-ui .record>div,.crash-ui .owner>div{min-width:0}
+@media(max-width:__PHONE_MAX__px){.crash-ui .records{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}}
+
+.crash-ui .controls .stake [data-action=minus],.crash-ui .controls .stake [data-action=plus]{font-size:var(--web-control-step-icon-size);line-height:1}
+
+.crash-ui .controls [data-action=difficulty]{padding-inline:var(--space-8)}
+/* One account surface; only individual players retain their pill cards. */
+.crash-ui .account .winners.panel,
+.crash-ui .account .records{
+ background:transparent;
+ border:0;
+ border-top:1px solid var(--border);
+ border-radius:0;
+ box-shadow:none;
+ margin-top:var(--space-16);
+ padding:var(--space-16) 0 0;
+}
+.crash-ui .account .wins-head{margin-bottom:var(--space-12)}
+.crash-ui .account .record-top,.crash-ui .account .owner{border:0;box-shadow:none;background:transparent}
+/* Record and owner share title/value rows, with the avatar centered beside them. */
+.crash-ui .account .record-top{align-items:flex-start;gap:var(--space-24)}
+.crash-ui .account .record>div,.crash-ui .account .owner>div{display:grid;row-gap:var(--space-4)}
+.crash-ui .account .owner{gap:var(--space-12);align-items:center}
+.crash-ui .account .owner-date{display:flex;align-items:center;min-height:calc(var(--web-card-amount-size) * 1.4);line-height:1.4}
+
+/* A compact upper HUD with history outside the account surface. */
+.crash-ui .account-column{width:100%;min-width:0;display:flex;flex-direction:column;gap:var(--space-8)}
+.crash-ui .account-column .history{margin:0;padding:0 var(--space-8);background:none;border:0;box-shadow:none;max-width:100%;pointer-events:auto}
+.crash-ui .pill{font-size:var(--web-hud-meta-size)}
+.crash-ui .identity strong{font-size:var(--web-hud-profile-size)}
+.crash-ui .balance .money{font-size:clamp(20px,5vw,24px)}
+.crash-ui .wins-head{font-size:var(--body-type-px)}
+.crash-ui .level,.crash-ui .owner-date,.crash-ui .online{font-size:var(--web-hud-meta-size)}
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){
+ .crash-ui .account-column{max-width:580px}
+ .crash-ui .balance .money{font-size:var(--web-hud-balance-size)}
+ .crash-ui .wins-head{font-size:var(--web-hud-section-size)}
+ .crash-ui .winner{grid-template-columns:28px minmax(72px,1fr) 52px minmax(100px,auto);padding:var(--space-8) 0}
+ .crash-ui .winner .avatar{width:28px;height:28px}
+ 
+}
+/* Phone HUD: reduce empty space while preserving 44px interactive targets. */
+@media(max-width:__PHONE_MAX__px){
+ .crash-ui .account .winners.panel,.crash-ui .account .records{margin-top:var(--space-8);padding-top:var(--space-8)}
+ .crash-ui .account .wins-head{margin-bottom:var(--space-4)}
+ .crash-ui .account .winner{flex-basis:168px;grid-template-columns:24px minmax(0,1fr);row-gap:0}
+ .crash-ui .account .winner .avatar,.crash-ui .account .owner .avatar{width:var(--space-24);height:var(--space-24)}
+ .crash-ui .account .record-top{gap:var(--space-8)}
+ .crash-ui .account .owner{gap:var(--space-8)}
+ .crash-ui .account .owner>div{row-gap:0}
+ .crash-ui .account .owner-date{min-height:0}
+}
+
+/* Nested surfaces derive their curvature from the enclosing surface and inset. */
+.crash-ui .panel{--panel-padding:var(--space-16)}
+.crash-ui .controls{
+ padding-bottom:calc(var(--control-padding) + var(--web-control-depth));
+ row-gap:calc(var(--web-control-row-gap) + var(--web-control-depth));
+}
+.crash-ui .controls .stake{
+ --stake-padding:var(--web-control-stake-padding);
+ --stake-radius:max(0px,calc(var(--panel-radius) - var(--control-padding)));
+ padding:var(--stake-padding);
+ padding-bottom:calc(var(--stake-padding) + var(--web-control-depth));
+ border-radius:var(--stake-radius);
+}
+.crash-ui .controls .stake .button{border-radius:max(0px,calc(var(--stake-radius) - var(--stake-padding)))}
+.crash-ui .account .winner{border-radius:max(0px,calc(var(--panel-radius) - var(--panel-padding)))}
+.crash-ui .account .icon-button{border-radius:max(0px,calc(var(--panel-radius) - var(--panel-padding)))}
+.crash-ui .modal .icon-button{border-radius:max(0px,calc(var(--modal-radius) - var(--modal-padding)))}
+@media(max-width:__PHONE_MAX__px){.crash-ui .panel{--panel-padding:var(--space-12)}}
+
+/* Desktop density keeps touch targets and body typography unchanged. */
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){
+ .crash-ui{--web-control-padding:var(--web-desktop-control-padding);--web-control-gap:var(--web-desktop-control-gap)}
+ .crash-ui .panel:not(.controls){--panel-padding:var(--web-desktop-panel-padding);padding:var(--panel-padding)}
+ .crash-ui .controls{max-width:var(--web-desktop-control-max-width)}
+ .crash-ui .controls .action{min-height:var(--web-desktop-action-height)}
+ .crash-ui .account .records{margin-top:var(--space-12);padding-top:var(--space-12)}
+ .crash-ui .wins-head{margin-bottom:var(--space-8)}
+}
+
+/* A single compact record summary below its heading. */
+.crash-ui .account .records{display:flex;flex-direction:column;gap:var(--space-6)}
+.crash-ui .records-heading{display:flex;align-items:center;gap:var(--space-8);font-size:var(--body-type-px)}
+.crash-ui .records-heading .icon{width:var(--space-24);height:var(--space-24)}
+.crash-ui .records-line{display:flex;align-items:center;gap:var(--space-8);min-width:0}
+.crash-ui .records-line .personal{flex:none;color:var(--success)}
+.crash-ui .account .records-line .record-top{display:flex;align-items:center;flex-wrap:nowrap;gap:var(--space-6);min-width:0;border-left:1px solid var(--border);padding-left:var(--space-8)}
+.crash-ui .records-line .personal[hidden]+.record-top{border-left:0;padding-left:0}
+.crash-ui .records-line .record-value{font-size:var(--body-type-px);white-space:nowrap;flex:none}
+.crash-ui .records-line .record-top .record-value{color:var(--gold)}
+.crash-ui .records-line .record-summary-label,.crash-ui .records-line .record-by{font-size:var(--web-card-title-size);flex:none;color:var(--text-muted)}
+.crash-ui .records-line .owner-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--web-card-title-size)}
+
+/* Phone-only upper-panel density; controls retain their own type scale. */
+@media(max-width:__PHONE_MAX__px){
+ .crash-ui .top{--web-card-title-size:var(--web-hud-mobile-title-size);--web-card-amount-size:var(--web-hud-mobile-amount-size)}
+ .crash-ui .top .identity strong{font-size:var(--web-hud-mobile-profile-size)}
+ .crash-ui .top .identity,.crash-ui .top .profile{gap:var(--space-8)}
+ .crash-ui .top .identity .avatar{width:var(--web-hud-mobile-avatar-size);height:var(--web-hud-mobile-avatar-size)}
+ .crash-ui .top .balance{gap:var(--space-6)}
+ .crash-ui .top .balance .money{font-size:var(--web-hud-mobile-balance-size)}
+ .crash-ui .top .wins-head,.crash-ui .top .records-heading{font-size:var(--web-hud-mobile-title-size)}
+ .crash-ui .top .records-heading{gap:var(--space-6)}
+ .crash-ui .top .records-heading .icon{width:var(--web-hud-mobile-win-avatar-size);height:var(--web-hud-mobile-win-avatar-size)}
+ .crash-ui .top .records-line .record-value{font-size:var(--web-hud-mobile-amount-size)}
+ .crash-ui .top .account .records{gap:var(--space-4)}
+ .crash-ui .top .account .winner{flex-basis:var(--web-hud-mobile-win-width);grid-template-columns:var(--web-hud-mobile-win-avatar-size) minmax(0,1fr);padding:var(--space-6) var(--space-8);column-gap:var(--space-6)}
+ .crash-ui .top .account .winner .avatar{width:var(--web-hud-mobile-win-avatar-size);height:var(--web-hud-mobile-win-avatar-size)}
+}
+
+/* Section spacing owns the account rhythm; do not add padding on both sides. */
+.crash-ui .account{display:flex;flex-direction:column;gap:var(--space-12)}
+.crash-ui .top .account>.winners.panel,
+.crash-ui .top .account>.records{margin:0;padding:0;border:0}
+.crash-ui .wins-head{position:relative;min-height:var(--space-32);padding-right:calc(var(--space-32) * 2 + var(--space-8))}
+.crash-ui .wins-head .text-button{position:absolute;right:0;top:50%;transform:translateY(-50%);min-height:var(--tap-min);margin:0}
+.crash-ui .account .wins-head{margin-bottom:var(--space-8)}
+
+/* Auto keeps its hit area while thumb and label exchange sides. */
+.crash-ui .controls .auto{position:relative;padding-inline:var(--space-6)}
+.crash-ui .controls .auto .knob{position:absolute;left:var(--space-6);top:50%;transform:translateY(-50%);transition:left .16s ease}
+.crash-ui .controls .auto .auto-label{flex:1;padding-left:var(--space-40);text-align:center}
+.crash-ui .controls .auto[aria-pressed=true] .knob{left:calc(100% - var(--space-32) - var(--space-6))}
+.crash-ui .controls .auto[aria-pressed=true] .auto-label{padding-left:0;padding-right:var(--space-40)}
+
+/* Align visible text rows, not the extra leading of inherited body line boxes. */
+.crash-ui .profile .identity>span:last-child{display:grid;gap:var(--space-4)}
+.crash-ui .profile .identity strong,.crash-ui .profile .level{line-height:1.2}
+.crash-ui .profile .level{display:block}
+.crash-ui .account .wins-head{min-height:var(--type-20);line-height:var(--type-20);margin-bottom:var(--space-12)}
+
+/* Operator features: disabled groups release their grid tracks instead of leaving gaps. */
+.crash-ui .controls.auto-only .settings-row{grid-template-columns:112px;justify-content:start}
+.crash-ui .controls.difficulty-only .settings-row{grid-template-columns:minmax(0,1fr)}
+@media(min-width:__CRASH_MEDIUM_BREAKPOINT__px){
+ .crash-ui .controls.no-presets>.stake{grid-column:1/-1}
+}
+@media(min-width:__CRASH_MEDIUM_BREAKPOINT__px) and (max-height:720px){
+ .crash-ui .controls.no-settings>.stake{grid-column:1;grid-row:1/3}
+ .crash-ui .controls.no-settings>.actions{grid-column:2;grid-row:2}
+ .crash-ui .controls.no-presets>.stake{grid-column:1}
+ .crash-ui .controls.no-presets>.actions{grid-row:1/3}
+ .crash-ui .controls.no-settings.no-presets>.stake{grid-row:1}
+ .crash-ui .controls.no-settings.no-presets>.actions{grid-column:2;grid-row:1}
+}
+@media(min-width:__CRASH_LAPTOP_BREAKPOINT__px){
+ .crash-ui .controls.auto-only{grid-template-columns:100px minmax(306px,1fr) minmax(260px,.8fr)}
+ .crash-ui .controls.auto-only .settings-row{grid-template-columns:100px}
+ .crash-ui .controls.no-presets>.stake{grid-column:auto}
+ .crash-ui .controls.no-presets>.actions{grid-column:3;grid-row:1}
+ .crash-ui .controls.no-settings{grid-template-columns:minmax(306px,1fr) minmax(260px,.8fr)}
+ .crash-ui .controls.no-settings>.stake{grid-row:auto}
+ .crash-ui .controls.no-settings>.presets{grid-column:1;grid-row:auto}
+ .crash-ui .controls.no-settings>.actions{grid-column:2;grid-row:1/3}
+ .crash-ui .controls.no-settings.no-presets>.actions{grid-column:2;grid-row:1}
+}
+@media(min-width:__CRASH_DESKTOP_BREAKPOINT__px){
+ .crash-ui .controls.auto-only{grid-template-columns:100px minmax(306px,1fr) minmax(192px,.7fr) minmax(280px,1fr)}
+ .crash-ui .controls.no-presets{grid-template-columns:212px minmax(306px,1fr) minmax(280px,1fr)}
+ .crash-ui .controls.auto-only.no-presets{grid-template-columns:100px minmax(306px,1fr) minmax(280px,1fr)}
+ .crash-ui .controls.no-settings{grid-template-columns:minmax(306px,1fr) minmax(192px,.7fr) minmax(280px,1fr)}
+ .crash-ui .controls.no-settings.no-presets{grid-template-columns:minmax(306px,1fr) minmax(280px,1fr)}
+ .crash-ui .controls.no-presets>.actions,.crash-ui .controls.no-settings>.presets,.crash-ui .controls.no-settings>.actions,.crash-ui .controls.no-settings.no-presets>.actions{grid-column:auto;grid-row:auto}
+}
+
+/* Paired phone actions need more breathing room than a full-width CTA. */
+@media(max-width:__PHONE_MAX__px){
+ .crash-ui .controls .actions:has(>[data-action=cash]:not([hidden])) .action-title{font-size:var(--type-20);gap:var(--space-8)}
+ .crash-ui .controls .actions:has(>[data-action=cash]:not([hidden])) .action .money{font-size:var(--type-16)}
+}
+
+/* Action symbols retain their size in single/paired and desktop/mobile layouts. */
+.crash-ui .controls .action-title .icon{width:var(--type-28);height:var(--type-28)}
+
+/* Three independent positions share the standard panel, stake and raised actions. */
+.crash-ui .controls.multi-bet-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--web-control-gap);align-items:start}
+.crash-ui .multi-bet{display:grid;gap:var(--space-8);min-width:0}
+.crash-ui .bet-quote{text-align:center;color:var(--text-muted);font-size:var(--web-card-title-size)}
+.crash-ui .bet-quote strong{display:block;font:var(--type-24)/1.2 CrashNumbers,CrashBody,sans-serif;color:var(--text)}
+.crash-ui .bet-receipt{color:var(--text-muted);font-size:var(--web-hud-meta-size);text-align:center;min-height:32px;display:flex;align-items:center;justify-content:center}
+.crash-ui .controls .bet-wager{grid-template-columns:var(--control-h) minmax(0,1fr) var(--control-h);gap:var(--space-4)}
+.crash-ui .bet-amount{width:100%;min-width:0;appearance:textfield;background:transparent;border:0;color:var(--text);padding:0;text-align:center;font:var(--type-20) CrashNumbers,CrashBody,sans-serif}
+.crash-ui .bet-amount::-webkit-inner-spin-button{appearance:none}
+.crash-ui .controls .bet-wager .bet-step{min-width:var(--tap-min);height:var(--control-h);padding:0;font-size:var(--web-control-step-icon-size);line-height:1}
+.crash-ui .controls .bet-action{width:100%;min-width:0;white-space:normal;font-size:var(--type-20);line-height:1.2}
+.crash-ui .bet-action .action-title{font-size:inherit}
+.crash-ui .bet-action .money{font-size:var(--body-type-px);line-height:1.15}
+.crash-ui .bet-action.bet-info{background:var(--surface-inset);color:var(--text-muted);border-color:var(--border);box-shadow:none;font-size:var(--web-card-title-size)}
+.crash-ui .bet-action.bet-info::before,.crash-ui .bet-action.bet-info::after{display:none}
+.crash-ui .bet-action.bet-cancel{background:linear-gradient(var(--button-top),var(--button-bottom));color:var(--text);border-color:var(--focus)}
+.crash-ui .bet-won .bet-receipt,.crash-ui .bet-won .bet-action{color:var(--success)}
+.crash-ui .round-phase{text-align:center;color:var(--text-muted);font-size:var(--web-hud-meta-size);line-height:1.2;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-pill);padding:var(--space-4) var(--space-12)}
+@media(max-width:__PHONE_MAX__px){
+ .crash-ui .controls.multi-bet-controls{gap:var(--space-8);padding:var(--space-8);padding-bottom:calc(var(--space-8) + var(--web-control-depth))}
+ .crash-ui .controls .bet-wager{padding:var(--space-4);padding-bottom:calc(var(--space-4) + var(--web-control-depth));grid-template-columns:repeat(2,minmax(var(--tap-min),1fr));gap:var(--space-4)}
+ .crash-ui .bet-amount{grid-column:1/-1;grid-row:1;min-height:28px;font-size:var(--body-type-px)}
+ .crash-ui .controls .bet-wager .bet-step{height:var(--tap-min)}
+ .crash-ui .bet-quote strong{font-size:var(--type-20)}
+ .crash-ui .controls .bet-action{font-size:var(--body-type-px)}
+ .crash-ui .bet-receipt{font-size:11px;min-height:30px}
+}
+
+/* Three-position actions retain their geometry across BET/CANCEL/COLLECT. */
+.crash-ui .controls .bet-action{height:76px;min-height:76px;flex-direction:column;border-radius:var(--button-radius)}
+
+/* Shared optional settings row for the three-position panel. */
+.crash-ui .controls.multi-bet-controls>.settings-row{grid-column:1/-1;grid-row:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:var(--web-control-gap)}
+.crash-ui .controls.multi-bet-controls.auto-only>.settings-row,.crash-ui .controls.multi-bet-controls.difficulty-only>.settings-row{grid-template-columns:minmax(0,1fr)}
+.crash-ui .controls.multi-bet-controls>.settings-row>.button{min-width:0;width:100%}
+
+.crash-ui .controls.multi-bet-controls[class]{grid-template-columns:repeat(3,minmax(0,1fr))}

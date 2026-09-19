@@ -1,0 +1,20 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3]
+[ext_resource type="Texture2D" path="res://assets/art/goat/goofy_clean.png" id="1"]
+[sub_resource type="AtlasTexture" id="Frame0"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 627, 627)
+[sub_resource type="AtlasTexture" id="Frame1"]
+atlas = ExtResource("1")
+region = Rect2(627, 0, 627, 627)
+[sub_resource type="AtlasTexture" id="Frame2"]
+atlas = ExtResource("1")
+region = Rect2(0, 627, 627, 627)
+[sub_resource type="AtlasTexture" id="Frame3"]
+atlas = ExtResource("1")
+region = Rect2(627, 627, 627, 627)
+[resource]
+animations = [
+{"name": &"idle", "loop": true, "speed": 1.0, "frames": [{"duration": 2.8, "texture": SubResource("Frame0")}, {"duration": 0.16, "texture": SubResource("Frame1")}]},
+{"name": &"jump", "loop": false, "speed": 1.0, "frames": [{"duration": 1.0, "texture": SubResource("Frame2")}]},
+{"name": &"hit", "loop": false, "speed": 266.6667, "frames": [{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")},{"duration": 1.0, "texture": SubResource("Frame3")}]}
+]

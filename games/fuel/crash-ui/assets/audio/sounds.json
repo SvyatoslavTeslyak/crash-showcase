@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "game": "kit",
+  "title": "Shared UI sounds",
+  "owner": "web/ui.js (BettingSound, WinSound)",
+  "events": [
+    {
+      "id": "click",
+      "label": "Button click",
+      "trigger": "PLAY, GO, CASH OUT and stake controls are pressed.",
+      "volume_db": -17.08,
+      "pitch_jitter": 0,
+      "generator": "ElevenLabs eleven_text_to_sound_v2",
+      "flow_url": "https://elevenlabs.io/app/flows/2pwPAIIJxdLNQAWbgSRh",
+      "prompt": "A single soft tactile interface button click, warm muted pop with a tiny crisp tick, very short and dry, no music or voices.",
+      "takes": [
+        {
+          "file": "web/assets/audio/click.ogg",
+          "enabled": true,
+          "source": "elevenlabs"
+        }
+      ]
+    },
+    {
+      "id": "confirm",
+      "label": "Cash out ready",
+      "trigger": "CASH OUT becomes available for the first time in a round.",
+      "volume_db": -18.42,
+      "pitch_jitter": 0,
+      "generator": "ElevenLabs eleven_text_to_sound_v2",
+      "flow_url": "https://elevenlabs.io/app/flows/SbZFM9DLX8KmmmoArqSt",
+      "prompt": "A brief soft two-note interface confirmation chime, warm rounded plucked tones rising gently, dry, no voices or background music.",
+      "takes": [
+        {
+          "file": "web/assets/audio/confirm.ogg",
+          "enabled": true,
+          "source": "elevenlabs"
+        }
+      ]
+    },
+    {
+      "id": "win",
+      "label": "Win popup",
+      "trigger": "The win popup opens.",
+      "volume_db": -7.13,
+      "pitch_jitter": 0,
+      "generator": "ElevenLabs eleven_text_to_sound_v2",
+      "flow_url": "https://elevenlabs.io/app/flows/6jxGdrR9AP3ZcRaHjT42",
+      "prompt": "A small handful of coins dropping into a metal cash tray, bright satisfying brief jingling clinks settling, close mic, under one second, no voices or music.",
+      "takes": [
+        {
+          "file": "web/assets/audio/win.ogg",
+          "enabled": true,
+          "source": "elevenlabs"
+        }
+      ]
+    },
+    {
+      "id": "win_transfer",
+      "label": "Win transfer",
+      "trigger": "Coins fly into the balance (same file, played 12% faster).",
+      "volume_db": -13.98,
+      "pitch_jitter": 0,
+      "generator": "ElevenLabs eleven_text_to_sound_v2",
+      "flow_url": "https://elevenlabs.io/app/flows/6jxGdrR9AP3ZcRaHjT42",
+      "prompt": "A small handful of coins dropping into a metal cash tray, bright satisfying brief jingling clinks settling, close mic, under one second, no voices or music.",
+      "takes": [
+        {
+          "file": "web/assets/audio/win.ogg",
+          "enabled": true,
+          "source": "elevenlabs"
+        }
+      ]
+    }
+  ]
+}

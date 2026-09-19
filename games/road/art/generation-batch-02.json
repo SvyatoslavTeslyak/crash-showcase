@@ -1,0 +1,68 @@
+[
+  {
+    "name": "taxi",
+    "prompt": "Production game sprite for Goat Road. A golden yellow Haitian taxi sedan, black roof luggage rack, small roof sign reading TAXI, dark blue windows, chrome bumpers. Match reference cartoon rendering: bold clean dark outlines, glossy rich colors, dimensional cel shading, top-left highlights, clear silhouette at mobile scale. Fixed elevated top-down camera matching reference vehicle. Vehicle long axis vertical, front bumper/front wheel pointing DOWN, rear at TOP. No diagonal rotation. Entire vehicle visible. Single isolated object centered on fully transparent background. No road, scenery, floor, glow, cast shadow or extra objects.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "job_id": "9c85605d-a184-4314-bc73-f238f10ecd50",
+    "source_asset_id": "a9fdc84f-dcaa-43b6-af3e-4c0d303c8de7",
+    "final_asset_id": "863a296f-af5c-5ca2-aa18-ce98d3c2fa5b",
+    "file": "assets/art/vehicles/taxi.png",
+    "status": "integrated"
+  },
+  {
+    "name": "pickup",
+    "prompt": "Production game sprite for Goat Road. A coral red compact pickup truck, open cargo bed containing two secured wooden produce crates, dark blue windows, rugged tires. Match reference cartoon rendering: bold clean dark outlines, glossy rich colors, dimensional cel shading, top-left highlights, clear silhouette at mobile scale. Fixed elevated top-down camera matching reference vehicle. Vehicle long axis vertical, front bumper/front wheel pointing DOWN, rear at TOP. No diagonal rotation. Entire vehicle visible. Single isolated object centered on fully transparent background. No road, scenery, floor, glow, cast shadow or extra objects.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "job_id": "fcdeacd8-3600-4d45-85d4-28d8685afaf3",
+    "source_asset_id": "4678da30-a4bf-43a0-977e-65aad0cff74c",
+    "final_asset_id": "fb67a687-4ceb-5b67-b638-8b6af5917d33",
+    "file": "assets/art/vehicles/pickup.png",
+    "status": "integrated"
+  },
+  {
+    "name": "motorcycle",
+    "prompt": "Production game sprite for Goat Road. A blue commuter motorcycle with one adult rider wearing a vivid red helmet and dark clothes. Rider seated facing the front of the motorcycle, both hands on handlebars. Match reference cartoon rendering: bold clean dark outlines, glossy rich colors, dimensional cel shading, top-left highlights, clear silhouette at mobile scale. Fixed elevated top-down camera matching reference vehicle. Vehicle long axis vertical, front bumper/front wheel pointing DOWN, rear at TOP. No diagonal rotation. Entire vehicle visible. Single isolated object centered on fully transparent background. No road, scenery, floor, glow, cast shadow or extra objects.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "job_id": "07706153-8619-443d-a4ab-d56525a6efc9",
+    "source_asset_id": "218d7355-3f44-4c37-97ec-76039027c4d6",
+    "final_asset_id": "c3f9727d-acaa-514c-a7b8-4f07d0cdc54e",
+    "file": "assets/art/vehicles/motorcycle.png",
+    "status": "integrated"
+  },
+  {
+    "name": "barrier",
+    "prompt": "Production game sprite for Goat Road. One closed horizontal road boom barrier: compact dark navy pedestal on LEFT, long thick red and ivory striped arm extending RIGHT, small green circular signal on pedestal. Arm perfectly horizontal across image. No vehicle. High angle game view. Match reference cartoon rendering: bold clean dark outlines, glossy rich colors, dimensional cel shading, top-left highlights, clear silhouette at mobile scale. Landscape composition. Single isolated object centered on fully transparent background. No road, scenery, floor, glow, cast shadow or extra objects.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "job_id": "13fd4fb2-8bb3-43d9-8967-f20ab7a54580",
+    "source_asset_id": "e0cd53aa-46ef-4491-a99c-072d8fd6da7a",
+    "final_asset_id": "5298326e-ed59-5c46-85f3-16d04cee14ca",
+    "file": "assets/art/road/barrier.png",
+    "status": "integrated"
+  },
+  {
+    "name": "asphalt",
+    "prompt": "Seamless tileable asphalt texture for a top-down Haitian mobile road crossing game. Orthographic directly overhead. Muted dark blue-grey asphalt, subtle fine grain, few faint repaired cracks and worn specks, broad calm empty surface. Stylized hand-painted cartoon rendering matching reference vehicle outlines and cel shading, but much lower contrast so characters stand out. Uniform lighting, identical opposing edges for seamless repeat. Texture fills whole square. No lane markings, no arrows, no curbs, no cars, no objects, no borders, no text, no perspective.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "job_id": "e9b847db-e19e-4e95-874b-bd965ba65ae9",
+    "source_asset_id": "11e29d2a-de73-4198-a85c-48ebd99c53a2",
+    "final_asset_id": "11e29d2a-de73-4198-a85c-48ebd99c53a2",
+    "file": "assets/art/road/asphalt.png",
+    "status": "integrated"
+  },
+  {
+    "name": "sidewalk",
+    "prompt": "Seamless tileable sidewalk paving texture for a top-down Haitian mobile road crossing game. Orthographic directly overhead. Warm desaturated sandy grey rectangular stone pavers in staggered rows, subtly chipped corners, sparse tiny moss seams. Quiet low contrast hand-painted cartoon game texture matching reference style. Texture fills whole square edge to edge, equal lighting, tileable opposing edges. No curb, plants, props, characters, street, text, cast shadows or perspective.",
+    "provider": "SpriteCook",
+    "model": "gpt-image-2",
+    "job_id": "2c3b1cb8-5141-466c-88c0-e3d946d37c8c",
+    "source_asset_id": "c4c4f3da-43fa-4ab2-8230-ac49790379ab",
+    "final_asset_id": "c4c4f3da-43fa-4ab2-8230-ac49790379ab",
+    "file": "assets/art/road/sidewalk.png",
+    "status": "integrated"
+  }
+]
