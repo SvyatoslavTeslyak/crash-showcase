@@ -1,0 +1,74 @@
+# Rebuilds the showcase from the five PixiJS ports and publishes it to GitHub Pages.
+#
+# Runs on demand, nightly, and whenever a port asks for it (a `repository_dispatch` with
+# event type `port-updated`). The ports and the shared kit are private, so checking them
+# out needs PORTS_TOKEN: a fine-grained personal access token with read access to the
+# five *-pixi repositories and crash-ui-kit, stored as a repository secret here.
+#
+# The site is pushed to the gh-pages branch, which Pages serves; main holds only this
+# workflow. Nothing is built on main, so a run can never overwrite it.
+
+name: Build showcase
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'
+  repository_dispatch:
+    types: [port-updated]
+
+concurrency:
+  group: showcase
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the shared kit
+        uses: actions/checkout@v4
+        with:
+          repository: SvyatoslavTeslyak/crash-ui-kit
+          token: ${{ secrets.PORTS_TOKEN }}
+          path: crash-ui-kit
+
+      - name: Check out the ports
+        run: |
+          set -e
+          for repo in goat-road explosive-fruits fish-master goat-gold fuel-run; do
+            git clone --quiet --depth 1 --recurse-submodules --shallow-submodules \
+              "https://x-access-token:${PORTS_TOKEN}@github.com/SvyatoslavTeslyak/${repo}-pixi.git" "Pixi/${repo}"
+          done
+        env:
+          PORTS_TOKEN: ${{ secrets.PORTS_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build every port
+        run: |
+          set -e
+          for repo in goat-road explosive-fruits fish-master goat-gold fuel-run; do
+            echo "== ${repo}"
+            (cd "Pixi/${repo}" && npm ci --silent && npm run --silent build)
+          done
+
+      - name: Assemble the site
+        run: python3 crash-ui-kit/tools/showcase.py --no-build --out site
+
+      - name: Publish to gh-pages
+        run: |
+          set -e
+          cd site
+          git init -q -b gh-pages
+          git config user.name "Crash Showcase"
+          git config user.email "noreply@github.com"
+          git add -A
+          git commit -q -m "Showcase build $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
