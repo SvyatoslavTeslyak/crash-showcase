@@ -3,7 +3,7 @@
 # Runs on demand, nightly, and whenever a port asks for it (a `repository_dispatch` with
 # event type `port-updated`). The ports and the shared kit are private, so checking them
 # out needs PORTS_TOKEN: a fine-grained personal access token with read access to the
-# five *-pixi repositories and crash-ui-kit, stored as a repository secret here.
+# seven *-pixi repositories and crash-ui-kit, stored as a repository secret here.
 #
 # The site is pushed to the gh-pages branch, which Pages serves; main holds only this
 # workflow. Nothing is built on main, so a run can never overwrite it.
@@ -41,7 +41,7 @@ jobs:
         run: |
           set -e
           git config --global url."https://x-access-token:${PORTS_TOKEN}@github.com/".insteadOf "https://github.com/"
-          for repo in goat-road explosive-fruits fish-master goat-gold fuel-run; do
+          for repo in goat-road explosive-fruits fish-master goat-gold fuel-run market-stack catch-clash; do
             git clone --quiet --depth 1 --recurse-submodules --shallow-submodules \
               "https://github.com/SvyatoslavTeslyak/${repo}-pixi.git" "Pixi/${repo}"
           done
@@ -55,7 +55,7 @@ jobs:
       - name: Build every port
         run: |
           set -e
-          for repo in goat-road explosive-fruits fish-master goat-gold fuel-run; do
+          for repo in goat-road explosive-fruits fish-master goat-gold fuel-run market-stack catch-clash; do
             echo "== ${repo}"
             (cd "Pixi/${repo}" && npm ci --silent && npm run --silent build)
           done
