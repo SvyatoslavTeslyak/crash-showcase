@@ -3,7 +3,7 @@
 # Runs on demand, nightly, and whenever a port asks for it (a `repository_dispatch` with
 # event type `port-updated`). The ports and the shared kit are private, so checking them
 # out needs PORTS_TOKEN: a fine-grained personal access token with read access to the
-# seven *-pixi repositories and crash-ui-kit, stored as a repository secret here.
+# seven *-pixi repositories, crash-composer and crash-ui-kit, stored as a repository secret here.
 #
 # The site is pushed to the gh-pages branch, which Pages serves; main holds only this
 # workflow. Nothing is built on main, so a run can never overwrite it.
@@ -28,12 +28,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the shared kit
+      - name: Check out Composer (the showcase page and its build script), with the kit submodule
         uses: actions/checkout@v4
         with:
-          repository: SvyatoslavTeslyak/crash-ui-kit
+          repository: SvyatoslavTeslyak/crash-composer
           token: ${{ secrets.PORTS_TOKEN }}
-          path: crash-ui-kit
+          path: crash-composer
+          submodules: true
 
       - name: Check out the ports
         # The kit is a submodule of every port, cloned by its plain GitHub URL, so the
@@ -61,7 +62,7 @@ jobs:
           done
 
       - name: Assemble the site
-        run: python3 crash-ui-kit/tools/showcase.py --no-build --out site
+        run: python3 crash-composer/tools/showcase.py --no-build --out site
 
       - name: Publish to gh-pages
         run: |
