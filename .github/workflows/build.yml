@@ -39,7 +39,10 @@ jobs:
           repository: SvyatoslavTeslyak/crash-composer-web
           ref: main
           path: composer-runtime
-          sparse-checkout: games/pixi/road
+          sparse-checkout: |
+            games/pixi
+            releases.json
+          sparse-checkout-cone-mode: false
 
       - name: Check out Composer (the showcase page and its build script), with the kit submodule
         uses: actions/checkout@v4
@@ -78,7 +81,7 @@ jobs:
         run: python3 crash-composer/tools/showcase.py --no-build --out site
 
       # Use only the already published runtime, never unpublished workspace drafts.
-      - name: Use published Goat Road
+      - name: Use published game configurations
         run: python3 showcase-tools/tools/sync_published_road.py composer-runtime/games/pixi/road site
 
       - name: Publish to gh-pages
