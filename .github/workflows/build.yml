@@ -1,4 +1,4 @@
-# Rebuilds the showcase from the five PixiJS ports and publishes it to GitHub Pages.
+# Rebuilds the showcase from the seven PixiJS ports and publishes it to GitHub Pages.
 #
 # Runs on demand, nightly, and whenever a port asks for it (a `repository_dispatch` with
 # event type `port-updated`). The ports and the shared kit are private, so checking them
@@ -28,6 +28,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out Showcase build helpers
+        uses: actions/checkout@v4
+        with:
+          path: showcase-tools
+
+      - name: Check out published Composer runtime
+        uses: actions/checkout@v4
+        with:
+          repository: SvyatoslavTeslyak/crash-composer-web
+          ref: main
+          path: composer-runtime
+          sparse-checkout: games/pixi/road
+
       - name: Check out Composer (the showcase page and its build script), with the kit submodule
         uses: actions/checkout@v4
         with:
@@ -63,6 +76,10 @@ jobs:
 
       - name: Assemble the site
         run: python3 crash-composer/tools/showcase.py --no-build --out site
+
+      # Use only the already published runtime, never unpublished workspace drafts.
+      - name: Use published Goat Road
+        run: python3 showcase-tools/tools/sync_published_road.py composer-runtime/games/pixi/road site
 
       - name: Publish to gh-pages
         run: |
