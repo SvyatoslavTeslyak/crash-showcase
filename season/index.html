@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en" data-games="../games/">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#120f09">
+<title>Fish Master vs Goat Gold</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Oxanium:wght@700&display=swap">
+<style>
+/* The landing for one vote between two games: a live score, both playable in demo.
+ * Every gap is a step of one scale (--s1…--s9) and every corner one of four radii,
+ * so the page keeps a single rhythm across the phone and desktop layouts. */
+@font-face{font-family:'Satoshi';src:url(../crash-ui/assets/fonts/uploads/Satoshi-Variable.woff2) format('woff2');font-weight:300 900;font-display:swap}
+:root{
+  color-scheme:dark;
+  --ground:#120f09;--surface:#1c1810;--raised:#29231a;--line:#3a3325;
+  --text:#f3ede3;--muted:#a39988;
+  --gold:#ffba2c;--ink:#17130c;--alarm:#ff4d3d;
+  --fish:#27d3f5;--goat:#ff4f7b;
+  --display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --body:'Satoshi',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --nums:'Oxanium','Satoshi',ui-monospace,monospace;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--s9:96px;
+  --r-sm:12px;--r-md:20px;--r-lg:24px;--r-xl:32px;
+  --gutter:var(--s4);
+  --section:var(--s8);
+  --control:52px;
+  --dock:calc(var(--control) + var(--s3) * 2 + env(safe-area-inset-bottom,0px));
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--text);font:600 15px/1.45 var(--body);padding:0 var(--gutter) var(--dock);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color .6s}
+.wrap{max-width:560px;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.92;margin:0;letter-spacing:.01em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.num{font-family:var(--nums);font-variant-numeric:tabular-nums}
+
+/* The final 48 hours: the whole arena dims, like the lights before the last round. */
+body.dark{background:#0a0805}
+body.dark::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at 50% 35%,transparent 35%,rgba(0,0,0,.6))}
+
+/* Top bar: logo, live score, clock. It stays on screen however far the page scrolls. */
+.logo{font:900 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.logo b{color:var(--gold)}
+.bug{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;margin-inline:calc(-1 * var(--gutter));padding:var(--s3) var(--gutter);background:color-mix(in srgb,var(--ground) 86%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bug-in{max-width:560px;margin-inline:auto;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:'logo meta' 'score score';gap:var(--s2) var(--s3);align-items:center}
+.bug .logo{grid-area:logo}
+.bug .score{grid-area:score}
+.bug .meta{grid-area:meta;justify-content:flex-end;gap:var(--s3)}
+.score{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--s3);align-items:center}
+.side{display:flex;align-items:baseline;gap:var(--s2);font:900 15px/1 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.side .pct{font:700 22px/1 var(--nums)}
+.side.l{color:var(--fish)}.side.r{color:var(--goat)}
+.bar{position:relative;height:var(--s3);border-radius:var(--s1);overflow:hidden;background:var(--goat);transition:box-shadow .3s}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--fish);transition:width 1s cubic-bezier(.2,.9,.2,1)}
+.bar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 55%)}
+.bar.dark{background:repeating-linear-gradient(135deg,var(--raised) 0 7px,var(--line) 7px 14px)}
+.bar.dark i{display:none}
+.bar.surge{animation:surge .9s ease-out}
+@keyframes surge{0%{box-shadow:0 0 0 0 var(--team)}35%{box-shadow:0 0 0 5px var(--team),0 0 26px 4px var(--team)}100%{box-shadow:0 0 0 0 transparent}}
+.meta{display:flex;align-items:center;font-size:12px;color:var(--muted)}
+.meta .clock{display:flex;gap:var(--s1);align-items:baseline}
+.meta .clock .num{color:var(--text);font-size:14px}
+.meta .clock.urgent .num{color:var(--alarm);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.you{font-weight:800;color:var(--team,var(--muted))}
+
+/* Main banner: the fight poster. Each half is its game's own world, split on a gold slash. */
+.hero{position:relative;isolation:isolate;overflow:hidden;margin:0 calc(-1 * var(--gutter));padding:var(--s6) var(--gutter);border-radius:0 0 var(--r-xl) var(--r-xl);background:var(--ground)}
+.scene{position:absolute;inset:0;z-index:-3;overflow:hidden}
+.scene .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scene.l{clip-path:polygon(0 0,60% 0,40% 100%,0 100%)}
+.scene.l .bg{object-position:30% 50%;filter:saturate(1.15)}
+.scene.r{clip-path:polygon(60% 0,100% 0,100% 100%,40% 100%)}
+.scene.r .bg{object-position:50% 40%;filter:saturate(1.1) brightness(.95)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,color-mix(in srgb,var(--fish) 22%,transparent),transparent 40% 60%,color-mix(in srgb,var(--goat) 22%,transparent)),linear-gradient(0deg,rgba(10,8,5,.9),rgba(10,8,5,.1) 55%,rgba(10,8,5,.45))}
+.hero::after{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(30% 55% at 50% 55%,rgba(10,8,5,.85),transparent 75%)}
+.slash{position:absolute;z-index:-1;left:50%;top:-4%;height:52%;width:4px;transform:translateX(-50%) rotate(11deg);background:linear-gradient(180deg,transparent,var(--gold) 20% 70%,transparent);box-shadow:0 0 18px 2px rgba(255,186,44,.6)}
+.swim{position:absolute;width:64px;opacity:.85;animation:swim 9s ease-in-out infinite}
+.swim.s1{left:8%;top:18%}.swim.s2{left:22%;top:70%;width:44px;animation-delay:-4s;transform:scaleX(-1)}
+@keyframes swim{50%{translate:18px -8px}}
+.ring{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s4)}
+.fighter{min-width:0;display:grid;gap:var(--s1);justify-items:center;text-align:center;--c:var(--fish)}
+.fighter.goat{--c:var(--goat)}
+.portrait{position:relative;width:100%;max-width:300px;aspect-ratio:1;transition:filter .5s}
+.portrait img{display:block;width:100%;height:100%;object-fit:contain}
+.fighter.fish .portrait img{object-fit:cover;-webkit-mask-image:radial-gradient(closest-side,#000 58%,transparent 100%);mask-image:radial-gradient(closest-side,#000 58%,transparent 100%)}
+.fighter.goat .portrait{margin-top:calc(-1 * var(--s3))}
+.fighter.goat .portrait>img:first-child{filter:drop-shadow(0 18px 24px rgba(0,0,0,.55))}
+.gem{position:absolute;width:18%!important;height:auto!important;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));animation:bob 4s ease-in-out infinite}
+.gem.g1{right:-2%;top:10%}.gem.g2{left:-4%;top:46%;animation-delay:-1.5s}.gem.g3{right:4%;bottom:6%;width:22%!important;animation-delay:-2.5s}
+@keyframes bob{50%{translate:0 -8px}}
+.fighter h2{margin-top:var(--s2);font-size:clamp(24px,7.4vw,48px);white-space:nowrap;text-shadow:0 4px 0 rgba(0,0,0,.4)}
+.tagline{display:none;font:800 11px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+.fighter.lost .portrait{filter:grayscale(.9) brightness(.5)}
+.crown{display:inline-block;margin-top:var(--s2);font:900 16px/1 var(--display);letter-spacing:.1em;background:var(--gold);color:var(--ink);padding:var(--s2) var(--s3);border-radius:var(--s2)}
+.team{display:inline-flex;align-items:center;gap:var(--s2);min-height:28px;padding:0 var(--s3);border-radius:99px;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);font:900 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase}
+.intro{margin-top:var(--s5);text-align:center;display:grid;gap:var(--s3);justify-items:center}
+.brandmark{font:900 18px/1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.brandmark b{color:var(--gold)}
+.intro h1{font-size:clamp(44px,12vw,72px);text-wrap:balance;text-shadow:0 4px 0 rgba(0,0,0,.4)}
+.intro h1 em{font-style:normal;color:var(--gold);display:block}
+.intro p{color:var(--text);opacity:.9;font-size:17px;max-width:26ch;text-wrap:balance}
+.intro p b{color:var(--gold)}
+.banner{margin-top:var(--s5);padding:var(--s4);border-radius:var(--r-md);text-align:center}
+.banner.gold{background:var(--gold);color:var(--ink)}
+.banner.gold h3{font-size:30px}
+.banner.dim{background:rgba(28,24,16,.9);border:1px dashed var(--line)}
+.banner.dim h3{font-size:26px}
+.banner small{display:block;margin-top:var(--s1);font-size:13px;opacity:.8}
+.cta{display:flex;align-items:center;justify-content:center;gap:var(--s3);margin:var(--s5) auto 0;min-height:56px;padding:0 var(--s6);border:0;border-radius:var(--r-sm);background:var(--gold);color:var(--ink);font:800 17px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2),0 14px 34px -10px rgba(255,186,44,.7)}
+.hero-clock{margin-top:var(--s4);display:flex;align-items:center;justify-content:center;gap:var(--s2);font-size:14px;color:var(--muted)}
+.hero-clock svg{color:var(--text)}
+.hero-clock b{font-size:18px;color:var(--text)}
+.hero-clock.urgent b{color:var(--alarm);animation:pulse 1s ease-in-out infinite}
+
+/* Sections: one centred axis, a big heading, the same space above each. */
+section{margin-top:var(--section);scroll-margin-top:calc(var(--s9) + var(--s3))}
+.shead{display:grid;gap:var(--s2);justify-items:center;text-align:center;margin-bottom:var(--s5)}
+.shead h2{font-size:36px;display:flex;align-items:center;gap:var(--s4)}
+.shead h2::before,.shead h2::after{content:"";width:var(--s7);height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--fish))}
+.shead h2::after{background:linear-gradient(90deg,var(--goat),transparent)}
+.shead p{color:var(--muted);font-size:14px}
+.shead p b{color:var(--text);font-size:20px;margin-right:var(--s1)}
+.pair .shead{justify-items:start;text-align:left}
+.pair .shead h2::before,.pair .shead h2::after{display:none}
+.card{padding:var(--s4);border-radius:var(--r-md);background:var(--surface)}
+
+/* Play both: a team panel per game. A phone shows one at a time; a desktop shows both. */
+#play{position:relative}
+.tabs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s1);padding:var(--s1);border-radius:var(--r-sm);background:var(--surface);margin-bottom:var(--s4)}
+.tabs button{min-height:44px;border:0;border-radius:var(--s2);background:transparent;color:var(--muted);font:900 19px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.tabs button[aria-selected="true"]{background:var(--c);color:var(--ink)}
+.games{display:grid;gap:var(--s4)}
+.gcol{min-width:0;display:grid;gap:var(--s4);justify-items:center;--c:var(--fish)}
+.gcol.goat{--c:var(--goat)}
+.gcol .info{display:none}
+.medal{display:none}
+.phone{padding:var(--s2);border-radius:34px;background:#07090c;box-shadow:0 0 0 2px var(--c),0 0 40px -6px var(--c),inset 0 0 0 1px rgba(255,255,255,.06)}
+.gframe{position:relative;width:calc(min(72dvh,680px) * 390 / 844);max-width:calc(100vw - var(--gutter) * 2 - var(--s4));aspect-ratio:390/844;border-radius:26px;overflow:hidden;background:#000}
+.gframe iframe{position:absolute;left:0;top:0;width:390px;height:844px;border:0;display:block;transform-origin:0 0;transform:scale(var(--k,1))}
+.gframe .spin{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:4px solid color-mix(in srgb,var(--c) 30%,transparent);border-top-color:var(--c);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gvote{width:100%;max-width:360px}
+.gvote .vote{width:100%}
+.gvote .vote svg{flex:none}
+.gvote .team{min-height:var(--control);width:100%;justify-content:center;font-size:18px;border-radius:var(--r-sm)}
+.feats{list-style:none;margin:var(--s5) 0 0;padding:0;display:grid;gap:var(--s4)}
+.feats li{display:flex;align-items:center;gap:var(--s3);font-size:14px;line-height:1.3;color:var(--text)}
+.feats i{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent)}
+
+/* The race: simulated vote data for the prototype. */
+.card-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s2) var(--s3);margin-bottom:var(--s4)}
+.card-head strong{font:900 20px/1 var(--display);text-transform:uppercase}
+.card-head .legend{margin:0}
+.live{display:inline-flex;align-items:center;gap:var(--s2);font-size:12px;font-weight:800;color:#4ace68}
+.live .live-dot{background:#4ace68}
+.race-grid{display:grid;gap:var(--s4)}
+.chart{position:relative;height:220px;outline:none;touch-action:pan-y}
+.chart:focus-visible{box-shadow:0 0 0 3px var(--gold);border-radius:var(--s2)}
+.chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.chart .tick{fill:var(--muted);font:600 11px var(--body)}
+.tip{position:absolute;top:0;z-index:2;min-width:150px;padding:var(--s3);border-radius:var(--r-sm);background:var(--raised);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.5);pointer-events:none;display:grid;gap:var(--s1);font-size:12px;color:var(--muted)}
+.tip .row{display:flex;align-items:center;gap:var(--s2)}
+.tip .row i{width:12px;height:2px;border-radius:2px}
+.tip .row b{color:var(--text);font:700 14px var(--nums);margin-left:auto}
+.chart-dark{position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(135deg,rgba(28,24,16,.92) 0 10px,rgba(41,35,26,.92) 10px 20px);border-radius:var(--s2)}
+.chart-dark strong{font:900 22px/1 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.legend{display:flex;gap:var(--s4);justify-content:center;margin-top:var(--s3);font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:var(--s2);vertical-align:-2px;opacity:.8}
+.feed-title{display:flex;align-items:center;gap:var(--s2);font:900 18px/1 var(--display);text-transform:uppercase;margin-bottom:var(--s2)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--alarm);animation:pulse 1.2s ease-in-out infinite}
+.feed{list-style:none;margin:0;padding:0;display:grid}
+.feed li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--s3);align-items:center;padding:var(--s3) 0;border-top:1px solid var(--line);font-size:14px}
+.feed li:first-child{border-top:0}
+.feed li.new{animation:feedIn .5s ease-out}
+@keyframes feedIn{from{opacity:0;transform:translateY(-6px)}}
+.feed .who{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:800 12px/1 var(--body);color:var(--ink);background:var(--c)}
+.feed .what{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed .what em{font-style:normal;color:var(--c);font-weight:800}
+.feed .ago{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Trailer and tale of the tape share one row on a desktop. */
+.trailer{position:relative;aspect-ratio:4/5;max-height:70dvh;width:100%;margin-inline:auto;border-radius:var(--r-lg);overflow:hidden;background:var(--raised)}
+.trailer img{width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(1.2)}
+.trailer .half{position:absolute;inset:0}
+.trailer .half.l{z-index:1;clip-path:polygon(0 0,64% 0,36% 100%,0 100%)}
+.trailer .half.l img{transform:scale(1.5) translateX(-14%)}
+.trailer .half.r img{transform:scale(1.5) translateX(16%)}
+.trailer::after{z-index:1;content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent 45%)}
+.trailer .vsmark{z-index:2;position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);font:900 72px/.8 var(--display);color:var(--gold);text-shadow:0 4px 0 var(--ground)}
+.trailer button{z-index:2;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--gold);color:var(--ink);box-shadow:0 12px 34px -8px var(--gold)}
+.trailer .tcap{z-index:2;position:absolute;left:var(--s5);right:var(--s5);bottom:var(--s5);display:flex;justify-content:space-between;align-items:end}
+.trailer .tcap strong{font:900 30px/.9 var(--display);text-transform:uppercase;color:var(--text);text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.trailer .tcap span{font-size:13px;color:var(--muted)}
+.tape{display:grid;border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.tape .row{display:grid;grid-template-columns:minmax(0,1fr) 80px minmax(0,1fr);align-items:center;gap:var(--s3);padding:var(--s4)}
+.tape .row+.row{border-top:1px solid var(--line)}
+.tape .head{font:900 20px/1 var(--display);text-transform:uppercase}
+.tteam{display:inline-flex;align-items:center;gap:var(--s2);justify-content:flex-start}
+.tteam.l{justify-content:flex-end}
+.tteam img{width:28px;height:28px;border-radius:var(--s2)}
+.tape .l{text-align:right}
+.tape .k{text-align:center;font-size:12px;color:var(--muted)}
+.tape .v{font-size:16px}
+
+footer{margin-top:var(--section);padding:var(--s5) 0;border-top:1px solid var(--line);display:flex;align-items:center;gap:var(--s4);color:var(--muted);font-size:12px}
+footer .fnote{flex:1}
+.age{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:2px solid var(--muted);font:700 11px/1 var(--nums);color:var(--text)}
+
+/* Vote dock. */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:var(--s3) var(--gutter) calc(var(--s3) + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.dock-in{max-width:560px;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s3);min-height:var(--control);align-items:stretch}
+.dock-in.one{grid-template-columns:minmax(0,1fr) auto}
+.vote{border:0;border-radius:var(--r-sm);padding:0 var(--s4);min-height:var(--control);font:800 15px/1 var(--body);text-transform:uppercase;letter-spacing:.04em;background:var(--c);color:var(--ink);box-shadow:inset 0 -4px 0 rgba(0,0,0,.22);--c:var(--fish);display:inline-flex;align-items:center;justify-content:center;gap:var(--s2)}
+.vote.goat{--c:var(--goat)}
+.vote.ghost{background:var(--raised);color:var(--text);box-shadow:none}
+.vote.gold{--c:var(--gold)}
+.dock-msg{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}
+.dock-msg strong{font:900 20px/1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--team,var(--text))}
+.dock-msg small{color:var(--muted);font-size:12px}
+
+/* Confetti in the team's colour when a vote lands. */
+.spark{position:fixed;z-index:30;width:9px;height:14px;border-radius:2px;background:var(--team);pointer-events:none;animation:fly .9s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+
+/* Share card preview. */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.8);display:grid;place-items:center;padding:var(--s5)}
+.modal-in{width:min(360px,100%);display:grid;gap:var(--s4)}
+.modal img{width:100%;aspect-ratio:9/16;border-radius:var(--r-md);display:block;background:var(--surface);max-height:66dvh;object-fit:contain}
+.modal .row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s3)}
+
+@media (min-width:900px){
+  :root{--gutter:var(--s6);--section:var(--s9)}
+  .wrap,.bug-in{max-width:1200px}
+  .bug-in{grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);grid-template-areas:'logo score meta';gap:var(--s6)}
+  .card{padding:var(--s5)}
+
+  /* Banner: fighters at the edges, the pitch between them. */
+  .hero{margin:var(--s5) 0 0;padding:var(--s7);border-radius:var(--r-xl);display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,400px) minmax(0,1fr);column-gap:var(--s6);align-items:center}
+  .hero>*:not(.scene):not(.slash){grid-column:2}
+  .hero .ring{display:contents}
+  #fish{grid-column:1;grid-row:1/span 6}
+  #goat{grid-column:3;grid-row:1/span 6}
+  .portrait{max-width:360px}
+  .intro{margin-top:0}
+  .intro h1{font-size:68px}
+  .slash{top:-10%;bottom:-10%;height:auto;transform:translateX(-50%) rotate(11deg);background:linear-gradient(180deg,var(--gold) 6% 14%,transparent 18% 84%,var(--gold) 88% 96%,transparent)}
+  .tagline{display:block}
+  .swim.s1{left:6%;top:12%}.swim.s2{left:30%;top:78%}
+
+  /* Play both: [features | phone] VS [phone | features], each side one team panel. */
+  .tabs{display:none}
+  .games{grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);gap:var(--s4);align-items:center}
+  .gcol,.gcol[hidden]{display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'info phone' 'vote vote';gap:var(--s5) var(--s5);align-items:center;padding:var(--s6);border-radius:var(--r-xl);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 16%,var(--surface)),var(--surface) 55%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent),0 30px 60px -30px var(--c)}
+  .gcol.goat{grid-template-columns:auto minmax(0,1fr);grid-template-areas:'phone info' 'vote vote'}
+  .gcol .info{display:block;grid-area:info}
+  .gcol .info h3{font-size:36px;line-height:.9;white-space:nowrap;color:var(--c)}
+  .gcol .info p{margin-top:var(--s2);color:var(--muted);font-size:14px}
+  .gcol.goat .info{text-align:right}
+  .gcol.goat .feats li{flex-direction:row-reverse}
+  .phone{grid-area:phone}
+  .gvote{grid-area:vote;max-width:none;justify-self:stretch}
+  .gframe{width:calc(min(58dvh,520px) * 390 / 844);max-width:none}
+  .medal{display:grid;place-items:center;position:relative;width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#2b2417,#0d0b07);box-shadow:0 0 0 3px var(--gold),0 0 40px 4px rgba(255,186,44,.45)}
+  .medal span{font:900 44px/1 var(--display);color:var(--gold);text-shadow:0 3px 0 #000}
+  .medal::before{content:"";position:absolute;left:50%;top:-220px;bottom:-220px;width:3px;z-index:-1;transform:translateX(-50%) rotate(14deg);background:linear-gradient(180deg,transparent,var(--gold) 30% 70%,transparent);box-shadow:0 0 16px rgba(255,186,44,.6)}
+  .shead h2{font-size:48px}
+
+  /* The race and the row below it split 3:2, so their inner edges line up. */
+  .race-grid,.pair{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:var(--s5);align-items:stretch}
+  .chart{height:300px}
+  .pair section{display:flex;flex-direction:column}
+  .pair .trailer,.pair .tape{flex:1}
+  .trailer{aspect-ratio:auto;min-height:360px;max-height:none}
+  .dock-in{max-width:560px}
+  .dock.idle{display:none}
+  body:has(.dock.idle){padding-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){*,*::before{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+</div>
+
+<div class="bug" id="bug">
+  <div class="bug-in">
+    <span class="logo">Loto<b>mobil</b></span>
+    <div class="score" aria-label="Live score">
+      <span class="side l">Fish <span class="pct" id="pctL">51%</span></span>
+      <div class="bar" id="bar"><i id="barFill" style="width:51%"></i></div>
+      <span class="side r"><span class="pct" id="pctR">49%</span> Gold</span>
+    </div>
+    <div class="meta">
+      <span id="youLine"><span class="num" id="voterCount">10,091</span> votes</span>
+      <span class="clock" id="clock"><span id="clockLabel">Voting ends</span><span class="num" id="countdown">4d 11:32:08</span></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+  <div class="scene l" aria-hidden="true"><img class="bg" src="bg-fish.webp" alt=""><img class="swim s1" src="fish-small.webp" alt=""><img class="swim s2" src="fish-small.webp" alt=""></div>
+  <div class="scene r" aria-hidden="true"><img class="bg" src="bg-goat.webp" alt=""></div>
+  <span class="slash" aria-hidden="true"></span>
+  <div class="ring">
+    <div class="fighter fish" id="fish">
+      <div class="portrait"><img src="fish.webp" alt="Fish Master"></div>
+      <h2>Fish Master</h2><p class="tagline">Haul it in before it rips</p>
+    </div>
+    <div class="fighter goat" id="goat">
+      <div class="portrait"><img src="goat-char.webp" alt="Goat Gold"><img class="gem g1" src="gem-diamond.webp" alt=""><img class="gem g2" src="gem-ruby.webp" alt=""><img class="gem g3" src="gem-ingot.webp" alt=""></div>
+      <h2>Goat Gold</h2><p class="tagline">Grab it before it bursts</p>
+    </div>
+  </div>
+  <div class="intro">
+    <span class="brandmark">Loto<b>mobil</b></span>
+    <h1>Pick our <em>next game</em></h1>
+    <p>Play both, vote, and the winner goes live on <b>1 December</b>.</p>
+  </div>
+  <div class="banner dim" id="darkBanner" hidden><h3>The score goes dark</h3><small>Votes still count · Reveal Sun 29 Nov, 20:00</small></div>
+  <div class="banner gold" id="wonBanner" hidden><h3>Fish Master wins</h3><small id="wonLine">Live on Lotomobil · December 1</small></div>
+  <button class="cta" data-go="play">Play &amp; vote<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  <p class="hero-clock" id="heroClock"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="heroClockLabel">Voting ends in</span> <b class="num" id="heroCountdown">4d 11:32:08</b></p>
+  </div>
+
+  <section id="play">
+    <div class="shead"><h2>Play both</h2><p>Try both games, feel the difference, then cast your vote.</p></div>
+    <div class="tabs" role="tablist" aria-label="Choose a game">
+      <button role="tab" data-tab="fish" aria-selected="true" style="--c:var(--fish)">Fish Master</button>
+      <button role="tab" data-tab="goat" aria-selected="false" style="--c:var(--goat)">Goat Gold</button>
+    </div>
+    <div class="games">
+    <div class="gcol fish" id="w-fish">
+      <div class="info"><h3>Fish Master</h3><p>Out at sea with a filling net.</p><ul class="feats"><li><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-3 16H7z"/><path d="M5.5 10h13M6.5 15h11M9 4l1.5 16M15 4l-1.5 16"/></svg></i>Net fills as it climbs</li><li><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 7-6 11-6 3 0 5 2 7 6-2 4-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12 1 8M3 12l-2 4"/><circle cx="16" cy="11" r="1" fill="currentColor"/></svg></i>Cash out before it rips</li><li><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg></i>4 difficulty levels</li></ul></div>
+      <div class="phone"><div class="gframe" id="g-fish"><span class="spin" aria-hidden="true"></span><iframe title="Fish Master demo" data-game="fish" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe></div></div>
+      <div class="gvote" id="v-fish" style="--c:var(--fish)"></div>
+    </div>
+    <div class="medal" aria-hidden="true"><span>VS</span></div>
+    <div class="gcol goat" id="w-goat" hidden>
+      <div class="info"><h3>Goat Gold</h3><p>A goofy goat, a sack of loot.</p><ul class="feats"><li><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l3 18 3-18"/></svg></i>Coins up to rubies</li><li><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-2 4h-2z"/><path d="M8 7h8c3 3 5 6 5 9a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5c0-3 2-6 5-9z"/><path d="M12 11v6M10 13h3a1.5 1.5 0 0 1 0 3h-3"/></svg></i>Cash out before it bursts</li><li><i><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg></i>4 difficulty levels</li></ul></div>
+      <div class="phone"><div class="gframe goat" id="g-goat"><span class="spin" aria-hidden="true"></span><iframe title="Goat Gold demo" data-game="goat" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe></div></div>
+      <div class="gvote" id="v-goat" style="--c:var(--goat)"></div>
+    </div>
+    </div>
+  </section>
+
+  <section id="race">
+    <div class="shead"><h2>The race</h2><p><b class="num" id="tVotes">10,091</b> votes so far</p></div>
+    <div class="race-grid">
+    <div class="chart-card card">
+      <div class="card-head"><strong>Vote share over time</strong><span class="legend"><span><i style="background:var(--fish)"></i>Fish Master</span><span><i style="background:var(--goat)"></i>Goat Gold</span></span></div>
+      <div class="chart" id="chart" tabindex="0" role="img" aria-label="Fish Master's share of the vote over time">
+        <svg id="chartSvg" viewBox="0 0 720 280" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <div class="tip" id="tip" hidden></div>
+        <div class="chart-dark" id="chartDark" hidden><strong>Hidden for the final 48 hours</strong></div>
+      </div>
+    </div>
+    <div class="feed-card card">
+      <div class="card-head"><strong>Latest votes</strong><span class="live"><span class="live-dot"></span>Live</span></div>
+      <ul class="feed" id="feed" aria-live="polite"></ul>
+    </div>
+    </div>
+  </section>
+
+  <div class="pair">
+    <section>
+      <div class="shead"><h2>Fight trailer</h2><p>Two worlds, one decision.</p></div>
+      <div class="trailer">
+        <div class="half l"><img src="fish.webp" alt=""></div>
+        <div class="half r"><img src="goat.webp" alt=""></div>
+        <span class="vsmark" aria-hidden="true">VS</span>
+        <button aria-label="Play the fight trailer"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+        <div class="tcap"><strong>Fish vs Gold</strong><span class="num">0:20</span></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Tale of the tape</h2><p>Different worlds, the same maths.</p></div>
+      <div class="tape">
+        <div class="row head"><span class="l tteam" style="color:var(--fish)">Fish Master<img src="fish.webp" alt=""></span><span></span><span class="tteam" style="color:var(--goat)"><img src="goat.webp" alt="">Goat Gold</span></div>
+        <div class="row"><span class="v l">Fish</span><span class="k">Catch</span><span class="v">Treasure</span></div>
+        <div class="row"><span class="v l">Net rips</span><span class="k">Crash</span><span class="v">Sack bursts</span></div>
+        <div class="row"><span class="v l num">4</span><span class="k">Levels</span><span class="v num">4</span></div>
+        <div class="row"><span class="v l num">95%</span><span class="k">RTP</span><span class="v num">95%</span></div>
+      </div>
+    </section>
+  </div>
+
+  <footer><span class="logo">Loto<b>mobil</b></span><span class="fnote">Demo uses play coins. Play responsibly.</span><span class="age">18+</span></footer>
+</div>
+
+<div class="dock"><div class="dock-in" id="dock"></div></div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-label="Your team card">
+  <div class="modal-in">
+    <img id="cardImg" alt="Your team card">
+    <div class="row2"><button class="vote ghost" id="closeModal">Close</button><button class="vote" id="shareCard">Share</button></div>
+  </div>
+</div>
+
+<script src="sim.js"></script>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+  const F={fish:{name:'Fish Master',short:'Fish',game:'fish',color:'#27d3f5'},goat:{name:'Goat Gold',short:'Gold',game:'gold',color:'#ff4f7b'}};
+  // Composer serves builds at games/pixi/<id>/, the showcase at games/<id>/; the page is told which.
+  const GAMES=document.documentElement.dataset.games;
+  const still=matchMedia('(prefers-reduced-motion:reduce)');
+  const wide=matchMedia('(min-width:900px)');
+  const Sim=window.SeasonSim,t0=Date.now();
+  // The simulated clock starts at the prototype's "now" and runs in real time from there.
+  const clock=()=>Sim.NOW+(Date.now()-t0);
+  const base=Sim.tally(Sim.NOW),final=Sim.tally(Sim.CLOSE);
+  let tally={fish:base.fish,goat:base.goat},bothCount=base.both,live=[],view='live',pending=null,pick=store.get('cs1-pick');
+  if(!F[pick])pick=null;
+  const played=new Set((store.get('cs1-played')||'').split(',').filter(k=>F[k]));
+
+  const teamIcon={fish:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 7-6 11-6 3 0 5 2 7 6-2 4-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12 1 8M3 12l-2 4"/><circle cx="16" cy="11" r="1" fill="currentColor"/></svg>',goat:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-2 4h-2z"/><path d="M8 7h8c3 3 5 6 5 9a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5c0-3 2-6 5-9z"/></svg>'};
+  const share=(pct)=>pick?Math.round((pick==='fish'?pct:100-pct)):0;
+  const icon={play:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>',share:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>'};
+
+  function pct(){return view==='won'?Math.round(final.fish/final.total*100):Math.round(tally.fish/(tally.fish+tally.goat)*100)}
+
+  function dock(){
+    const d=$('dock');d.style.removeProperty('--team');
+    // On a desktop each game has its own vote button, so the dock only shows once there is a team to share.
+    d.parentElement.classList.toggle('idle',!pick&&view!=='won');
+    if(view==='won'){d.className='dock-in one';d.innerHTML='<div class="dock-msg"><strong style="color:var(--gold)">Fish Master wins</strong><small>Thanks for voting</small></div><button class="vote gold" data-play="fish">'+icon.play+'Play</button>';return}
+    if(pending){d.className='dock-in';d.innerHTML='<button class="vote ghost" id="no">Back</button><button class="vote '+pending+'" id="yes">Confirm '+F[pending].short+'</button>';return}
+    if(pick){d.className='dock-in one';d.style.setProperty('--team',F[pick].color);d.innerHTML='<div class="dock-msg"><strong>Team '+F[pick].short+'</strong><small>You\'re with '+(view==='dark'?'…':share(pct())+'%')+' of players</small></div><button class="vote '+pick+'" id="card">'+icon.share+'Share</button>';return}
+    d.className='dock-in';d.innerHTML='<button class="vote" data-vote="fish">Vote Fish</button><button class="vote goat" data-vote="goat">Vote Gold</button>';
+  }
+
+  function render(){
+    const p=pct(),dark=view==='dark',won=view==='won';
+    document.body.classList.toggle('dark',dark);
+    $('bar').classList.toggle('dark',dark);
+    $('barFill').style.width=p+'%';
+    $('pctL').textContent=dark?'?':p+'%';$('pctR').textContent=dark?'?':(100-p)+'%';
+    $('darkBanner').hidden=!dark;$('wonBanner').hidden=!won;
+    if(won)$('wonLine').textContent=p+'% of '+final.total.toLocaleString('en-US')+' votes · Live on Lotomobil · December 1';
+    const total=won?final.total:tally.fish+tally.goat;
+    $('youLine').innerHTML=pick&&!won?'<span class="you" style="--team:'+F[pick].color+'">Team '+F[pick].short+'</span> · <span class="num">'+total.toLocaleString('en-US')+'</span> votes':'<span class="num">'+total.toLocaleString('en-US')+'</span> votes';
+    $('clockLabel').textContent=won?'Release in':dark?'Reveal in':'Voting ends';
+    ['fish','goat'].forEach(k=>{
+      const f=$(k);
+      f.classList.toggle('lost',won&&k==='goat');f.classList.toggle('won',won&&k==='fish');
+      f.querySelector('.crown')?.remove();f.querySelector('.team')?.remove();
+      if(won&&k==='fish')f.querySelector('.portrait').insertAdjacentHTML('beforeend','<span class="crown">Winner</span>');
+      if(pick===k&&!won)f.insertAdjacentHTML('beforeend','<span class="team">✓ Your team</span>');
+    });
+    ['fish','goat'].forEach(k=>{
+      $('v-'+k).innerHTML=won?'':pick===k?'<span class="team">✓ Your team</span>':pick?'':pending===k?'<button class="vote '+k+'" data-confirm="1">Confirm '+F[k].short+'</button>':'<button class="vote '+k+'" data-vote="'+k+'">'+teamIcon[k]+'Vote '+F[k].name+'</button>';
+    });
+    race();
+    dock();tick();
+  }
+
+  // ---- The race: tiles, share-over-time chart, latest votes ----
+  const fmt=n=>n.toLocaleString('en-US');
+  const DAY=24*3600e3;
+  function raceData(){
+    const until=view==='won'?Sim.CLOSE:Sim.NOW,s=Sim.series(until).slice();
+    if(view==='live'&&live.length){const t=tally.fish+tally.goat;s.push({t:clock(),share:tally.fish/t,total:t})}
+    return s;
+  }
+  let pts=[],hover=null;
+  const W=720,H=280,PL=6,PR=58,PT=14,PB=26,YMIN=.4,YMAX=.6;
+  const X=t=>PL+(t-Sim.OPEN)/(Sim.CLOSE-Sim.OPEN)*(W-PL-PR),Y=v=>PT+(YMAX-Math.max(YMIN,Math.min(YMAX,v)))/(YMAX-YMIN)*(H-PT-PB);
+  function drawChart(){
+    const svg=$('chartSvg'),mid=Y(.5);
+    const path=f=>pts.map((p,i)=>(i?'L':'M')+X(p.t).toFixed(1)+' '+Y(f(p)).toFixed(1)).join('');
+    let g='';
+    [.45,.5,.55].forEach(v=>{g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#3a3325" stroke-width="1"'+(v===.5?' stroke-dasharray="4 4" stroke="#6b6152"':'')+'/><text class="tick" x="'+(W-PR+8)+'" y="'+(Y(v)+4)+'">'+Math.round(v*100)+'%</text>'});
+    [2,7,12,17,22].forEach(d=>{const t=Date.UTC(2026,10,d);g+='<text class="tick" x="'+X(t)+'" y="'+(H-6)+'" text-anchor="'+(d===2?'start':'middle')+'">'+d+' Nov</text>'});
+    const trailer=Date.UTC(2026,10,10,6);
+    g+='<line x1="'+X(trailer)+'" x2="'+X(trailer)+'" y1="'+PT+'" y2="'+(H-PB)+'" stroke="#6b6152" stroke-width="1" stroke-dasharray="2 3"/><text class="tick" x="'+(X(trailer)+6)+'" y="'+(PT+10)+'">Gold trailer</text>';
+    [['#ff4f7b',p=>1-p.share],['#27d3f5',p=>p.share]].forEach(([c,f])=>{g+='<path d="'+path(f)+'" fill="none" stroke="'+c+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'});
+    const e=pts[pts.length-1],fy=Y(e.share),gy=Y(1-e.share),gap=Math.max(0,16-Math.abs(fy-gy))/2,up=fy<=gy?-1:1;
+    [['#27d3f5',e.share,fy,fy+up*gap],['#ff4f7b',1-e.share,gy,gy-up*gap]].forEach(([c,v,y,ly])=>{g+='<circle cx="'+X(e.t)+'" cy="'+y+'" r="4.5" fill="'+c+'" stroke="#1c1810" stroke-width="2"/><text x="'+(X(e.t)+10)+'" y="'+(ly+4)+'" fill="'+c+'" font-size="14" font-weight="700" font-family="Oxanium,monospace">'+(v*100).toFixed(1)+'%</text>'});
+    if(hover!=null){const p=pts[hover];g+='<line x1="'+X(p.t)+'" x2="'+X(p.t)+'" y1="'+PT+'" y2="'+(H-PB)+'" stroke="#f3ede3" stroke-opacity=".5" stroke-width="1"/>';[[p.share,'#27d3f5'],[1-p.share,'#ff4f7b']].forEach(([v,c])=>{g+='<circle cx="'+X(p.t)+'" cy="'+Y(v)+'" r="5" fill="'+c+'" stroke="#1c1810" stroke-width="2"/>'})}
+    svg.innerHTML=g;
+  }
+  function showTip(i){
+    hover=i;drawChart();const p=pts[i],tip=$('tip'),box=$('chart').getBoundingClientRect();
+    const d=new Date(p.t);tip.replaceChildren();
+    const head=document.createElement('span');head.textContent=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})+' · '+String(d.getUTCHours()).padStart(2,'0')+':00';tip.append(head);
+    [['Fish Master',p.share,'#27d3f5'],['Goat Gold',1-p.share,'#ff4f7b']].forEach(([n,v,c])=>{const r=document.createElement('span');r.className='row';const k=document.createElement('i');k.style.background=c;const l=document.createElement('span');l.textContent=n;const b=document.createElement('b');b.textContent=(v*100).toFixed(1)+'%';r.append(k,l,b);tip.append(r)});
+    const tot=document.createElement('span');tot.textContent=fmt(p.total)+' votes';tip.append(tot);
+    tip.hidden=false;const x=X(p.t)/W*box.width;tip.style.left=Math.max(0,Math.min(box.width-tip.offsetWidth,x+12))+'px';
+  }
+  function hideTip(){hover=null;$('tip').hidden=true;drawChart()}
+  const chartEl=$('chart');
+  chartEl.addEventListener('pointermove',e=>{if(view==='dark'||!pts.length)return;const r=chartEl.getBoundingClientRect(),t=Sim.OPEN+((e.clientX-r.left)/r.width*W-PL)/(W-PL-PR)*(Sim.CLOSE-Sim.OPEN);let best=0;pts.forEach((p,i)=>{if(Math.abs(p.t-t)<Math.abs(pts[best].t-t))best=i});showTip(best)});
+  chartEl.addEventListener('pointerleave',hideTip);
+  chartEl.addEventListener('blur',hideTip);
+  chartEl.addEventListener('keydown',e=>{if(view==='dark'||!pts.length)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();showTip(Math.max(0,Math.min(pts.length-1,(hover??pts.length-1)+(e.key==='ArrowRight'?1:-1))))}});
+  function race(){
+    const dark=view==='dark',won=view==='won';
+    pts=raceData();
+    const total=won?final.total:tally.fish+tally.goat;
+    $('tVotes').textContent=dark?'—':fmt(total);
+    $('chartDark').hidden=!dark;
+    if(hover!=null&&hover>=pts.length)hover=null;
+    drawChart();
+    feed();
+  }
+  function ago(ms){const s=Math.max(1,Math.round(ms/1000));return s<60?s+'s ago':s<3600?Math.round(s/60)+'m ago':Math.round(s/3600)+'h ago'}
+  let feedKey='';
+  function feed(){
+    const now=view==='won'?Sim.CLOSE:clock(),list=[...live].reverse().concat(Sim.recent(view==='won'?Sim.CLOSE:Sim.NOW,6)).slice(0,6);
+    const key=view+list.map(v=>v.at).join();
+    const ul=$('feed');
+    if(key!==feedKey){
+      const was=feedKey;feedKey=key;
+      ul.replaceChildren(...list.map((v,i)=>{
+        const li=document.createElement('li');li.style.setProperty('--c',F[v.side].color);if(was&&v.fresh&&i<3)li.classList.add('new');
+        const who=document.createElement('span');who.className='who';who.textContent=v.name[0];
+        const what=document.createElement('span');what.className='what';what.append(v.name+' voted ');const em=document.createElement('em');em.textContent=F[v.side].short;what.append(em);
+        const t=document.createElement('span');t.className='ago';t.dataset.at=v.at;
+        li.append(who,what,t);return li}));
+      if(was)live.forEach(v=>v.fresh=false);
+    }
+    ul.querySelectorAll('.ago').forEach(el=>el.textContent=ago(now-+el.dataset.at));
+  }
+
+  // Countdown: each prototype state has its own deadline; under a day it turns red and pulses.
+  const start=Date.now(),deadline={live:(4*24+11)*3600+1928,dark:19*3600+14*60+40,won:2*24*3600+3*3600+600};
+  const pad=n=>String(n).padStart(2,'0');
+  function tick(){
+    let s=Math.max(0,deadline[view]-Math.floor((Date.now()-start)/1000));
+    $('heroClock').classList.toggle('urgent',view!=='won'&&s<86400);
+    $('clock').classList.toggle('urgent',view!=='won'&&s<86400);
+    const d=Math.floor(s/86400);s%=86400;
+    const left=(d?d+'d ':'')+pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(s%60);
+    $('countdown').textContent=left;$('heroCountdown').textContent=left;
+    $('heroClockLabel').textContent=view==='won'?'Goes live in':view==='dark'?'Result revealed in':'Voting ends in';
+  }
+
+  // Games play on the page. A frame gets its game once it is shown; a tap inside counts as having played it.
+  let tab='fish';
+  function markPlayed(k){if(played.has(k))return;played.add(k);store.set('cs1-played',[...played].join(','));render()}
+  function games(){
+    ['fish','goat'].forEach(k=>{
+      const on=wide.matches||tab===k,f=$('g-'+k).querySelector('iframe');
+      $('w-'+k).hidden=!on;
+      document.querySelector('[data-tab="'+k+'"]').setAttribute('aria-selected',tab===k);
+      if(on&&!f.getAttribute('src')){
+        f.addEventListener('load',()=>{$('g-'+k).querySelector('.spin')?.remove();try{f.contentWindow.addEventListener('pointerdown',()=>markPlayed(k))}catch(e){}},{once:true});
+        f.src=GAMES+F[k].game+'/index.html';
+      }
+    });
+  }
+  function play(k){tab=k;games();$('play').scrollIntoView({behavior:still.matches?'auto':'smooth'})}
+  wide.addEventListener?.('change',games);
+  // A game lays itself out for the width it is given, and squeezes its panel below phone width.
+  // So each one runs at 390×844, a real phone, and the frame shrinks the picture instead.
+  const fit=new ResizeObserver(es=>es.forEach(e=>e.target.style.setProperty('--k',e.contentRect.width/390)));
+  document.querySelectorAll('.gframe').forEach(el=>fit.observe(el));
+
+  // A vote lands: the bar surges, confetti in the team colour, a buzz, and the team card is offered.
+  function celebrate(k){
+    const bar=$('bar');bar.style.setProperty('--team',F[k].color);bar.classList.remove('surge');void bar.offsetWidth;bar.classList.add('surge');
+    try{navigator.vibrate?.([18,40,28])}catch(e){}
+    if(still.matches)return;
+    const b=$('dock').getBoundingClientRect(),x=b.left+b.width/2,y=b.top;
+    for(let i=0;i<26;i++){
+      const sp=document.createElement('i');sp.className='spark';sp.style.setProperty('--team',i%4?F[k].color:'#ffba2c');
+      const a=-Math.PI/2+(Math.random()-.5)*2.2,d=140+Math.random()*220;
+      sp.style.left=x+'px';sp.style.top=y+'px';sp.style.setProperty('--dx',Math.cos(a)*d+'px');sp.style.setProperty('--dy',Math.sin(a)*d+'px');sp.style.setProperty('--r',(Math.random()*720-360)+'deg');
+      document.body.append(sp);setTimeout(()=>sp.remove(),950);
+    }
+  }
+
+  // The team card: a 9:16 image made on the phone, ready for WhatsApp or a story.
+  const load=src=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+  function rr(x,x0,y0,w,h,r){x.beginPath();x.moveTo(x0+r,y0);x.arcTo(x0+w,y0,x0+w,y0+h,r);x.arcTo(x0+w,y0+h,x0,y0+h,r);x.arcTo(x0,y0+h,x0,y0,r);x.arcTo(x0,y0,x0+w,y0,r);x.closePath()}
+  let cardBlob=null;
+  async function makeCard(){
+    const k=pick,c=document.createElement('canvas');c.width=1080;c.height=1920;const x=c.getContext('2d');
+    try{await Promise.all(['900 120px "Big Shoulders Display"','700 60px Oxanium','700 40px Satoshi'].map(f=>document.fonts.load(f)))}catch(e){}
+    x.fillStyle='#120f09';x.fillRect(0,0,1080,1920);
+    const g=x.createRadialGradient(540,760,40,540,760,900);g.addColorStop(0,F[k].color+'88');g.addColorStop(1,'#120f0900');x.fillStyle=g;x.fillRect(0,0,1080,1920);
+    x.textAlign='center';x.fillStyle='#ffba2c';x.font='900 64px "Big Shoulders Display",Impact,sans-serif';x.fillText('LOTOMOBIL · WHICH GAME NEXT?',540,170);
+    const img=await load(k+'.webp');
+    x.save();x.shadowColor=F[k].color;x.shadowBlur=90;rr(x,190,300,700,700,70);x.fillStyle=F[k].color;x.fill();x.restore();
+    x.save();rr(x,204,314,672,672,58);x.clip();x.drawImage(img,204,314,672,672);x.restore();
+    x.fillStyle='#f3ede3';x.font='900 120px "Big Shoulders Display",Impact,sans-serif';x.fillText("I'M TEAM",540,1190);
+    x.fillStyle=F[k].color;x.font='900 300px "Big Shoulders Display",Impact,sans-serif';x.fillText(F[k].short.toUpperCase(),540,1470);
+    const p=pct();rr(x,140,1560,800,34,14);x.fillStyle='#ff4f7b';x.fill();x.save();rr(x,140,1560,800,34,14);x.clip();x.fillStyle='#27d3f5';x.fillRect(140,1560,8*p,34);x.restore();
+    x.font='700 52px Oxanium,monospace';x.textAlign='left';x.fillStyle='#27d3f5';x.fillText(p+'%',140,1670);x.textAlign='right';x.fillStyle='#ff4f7b';x.fillText((100-p)+'%',940,1670);
+    x.textAlign='center';x.fillStyle='#a39988';x.font='700 40px Satoshi,sans-serif';x.fillText('Fish Master vs Goat Gold · pick your side',540,1800);
+    return new Promise(ok=>c.toBlob(ok,'image/png'));
+  }
+  async function openCard(){
+    $('modal').hidden=false;$('cardImg').removeAttribute('src');$('shareCard').className='vote '+pick;
+    cardBlob=await makeCard();$('cardImg').src=URL.createObjectURL(cardBlob);
+  }
+  async function shareCard(){
+    if(!cardBlob)return;
+    const file=new File([cardBlob],'team-'+F[pick].short.toLowerCase()+'.png',{type:'image/png'}),text="I'm Team "+F[pick].short+" in Fish Master vs Goat Gold on Lotomobil. Pick your side: "+location.href;
+    try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],text});return}}catch(e){if(e.name==='AbortError')return}
+    const a=document.createElement('a');a.href=URL.createObjectURL(cardBlob);a.download=file.name;a.click();
+  }
+
+  document.addEventListener('click',async e=>{
+    const t=e.target.closest('button');if(!t)return;
+    if(t.dataset.go){
+      if(t.dataset.go==='play')return $('play').scrollIntoView({behavior:still.matches?'auto':'smooth'});
+      if(t.dataset.go==='vote'){const d=$('dock');d.animate?.([{transform:'scale(1)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],{duration:500});return}
+      return;
+    }
+    if(t.dataset.view){view=t.dataset.view;pending=null;return render()}
+    if(t.dataset.play)return play(t.dataset.play);
+    if(t.dataset.tab){tab=t.dataset.tab;return games()}
+    if(t.dataset.vote){pending=t.dataset.vote;return render()}
+    if(t.id==='no'){pending=null;return render()}
+    if(t.id==='yes'||t.dataset.confirm){pick=pending;pending=null;tally[pick]+=1;store.set('cs1-pick',pick);render();celebrate(pick);setTimeout(openCard,still.matches?0:900);return}
+    if(t.id==='card')return openCard();
+    if(t.id==='shareCard')return shareCard();
+    if(t.id==='closeModal'){$('modal').hidden=true;return}
+    if(t.id==='reset'){pick=null;pending=null;played.clear();store.set('cs1-pick',null);store.set('cs1-played',null);return render()}
+  });
+  document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('modal').hidden)$('modal').hidden=true;});
+
+  // Sample votes keep arriving, so the bar moves while the page is open.
+  // New simulated votes keep arriving while the page is open.
+  setInterval(()=>{
+    if(view!=='live')return;
+    const n=1+Math.floor(Math.random()*3);
+    for(let i=0;i<n;i++){
+      const side=Math.random()<.555?'fish':'goat',v={at:clock(),side,name:Sim.names[Math.floor(Math.random()*Sim.names.length)]+' '+Sim.initials[Math.floor(Math.random()*Sim.initials.length)]+'.',fresh:true};
+      tally[side]++;if(Math.random()<.68)bothCount++;live.push(v);
+    }
+    render();
+  },2600);
+  setInterval(tick,1000);
+  // Stages for showing the client, from the address: #final (last 48 hours), #winner, #reset.
+  function fromHash(){
+    const h=location.hash.slice(1);
+    if(h==='reset'){pick=null;pending=null;played.clear();store.set('cs1-pick',null);store.set('cs1-played',null);history.replaceState(null,'',location.pathname);view='live'}
+    else view=h==='final'?'dark':h==='winner'?'won':'live';
+    pending=null;render();
+  }
+  addEventListener('hashchange',fromHash);
+  fromHash();games();
+})();
+</script>
+</body>
+</html>

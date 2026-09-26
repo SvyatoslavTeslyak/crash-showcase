@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Crash Games</title>
+<link rel="icon" type="image/png" sizes="64x64" href="showcase-icon-64.png">
+<link rel="apple-touch-icon" href="showcase-icon-180.png">
+<link rel="stylesheet" href="crash-ui/tokens.css?v=6c9d286f">
+<link rel="stylesheet" href="inspector.css?v=6c9d286f">
+<link rel="stylesheet" href="workbench.css?v=6c9d286f">
+<script src="crash-ui/tokens.js?v=6c9d286f"></script>
+<script src="icons.js?v=6c9d286f"></script>
+<script src="workbench.js?v=6c9d286f"></script>
+<style>
+/* The games behind the Composer's Layout controls, for looking rather than working:
+   pick a game by its icon, pick a device, decide which panels the player sees. Nothing
+   here talks to a server, so it can live on any static host. Every value is a token
+   from crash-ui/tokens.css or inspector.css. */
+:root{--bg:var(--inspector-bg-deep);--panel:var(--inspector-bg);--line:var(--inspector-border);--muted:var(--inspector-muted);--text:var(--inspector-text);--accent:var(--inspector-accent);--accent-dim:var(--inspector-surface-selected);--ink:var(--inspector-ink-selected);--surface:var(--inspector-surface);--hover:var(--inspector-surface-hover);--radius:var(--radius-8);--shade:color-mix(in srgb,var(--shadow) calc(var(--alpha-strong) * 100%),transparent);--shade-deep:color-mix(in srgb,var(--shadow) calc(var(--alpha-scrim) * 100%),transparent)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{display:grid;grid-template-columns:var(--inspector-sidebar-width) minmax(0,1fr);background:var(--bg);color:var(--text);font:var(--inspector-type-md)/1.45 var(--inspector-sans);overflow:hidden}
+aside{min-height:0;overflow:auto;background:var(--panel);border-right:var(--stroke-1) solid var(--line);padding:var(--space-24) var(--space-16);display:flex;flex-direction:column;gap:var(--space-24)}
+h1{display:flex;align-items:center;gap:var(--space-8);margin:0;font-size:var(--inspector-type-lg);letter-spacing:.02em}
+h1 img{border-radius:var(--radius-8)}h1 small{display:block;font-size:var(--inspector-type-xs);font-weight:400;color:var(--muted);margin-top:var(--space-4)}
+button{font:inherit;color:var(--text);background:var(--surface);border:var(--stroke-1) solid var(--line);border-radius:var(--radius);cursor:pointer;padding:0}
+button:hover{background:var(--hover)}button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-dim);color:var(--ink)}
+button:focus-visible{outline:var(--stroke-2) solid var(--accent);outline-offset:var(--stroke-2)}
+.game-language{display:grid;gap:var(--space-12);width:100%;min-width:0}.game-language #picker{min-width:0;width:100%}.game-language .game.pick{grid-template-columns:var(--space-40) minmax(0,1fr) var(--space-16)}.game-language .game.pick small{white-space:nowrap}.game-language .language-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-12);min-height:var(--tap-min);color:var(--muted)}.language-row{flex-wrap:wrap}#language-chips{display:flex;gap:var(--space-6);margin-left:auto}#language-chips .wb-button{min-width:var(--tap-min);min-height:var(--tap-min);padding:0 var(--space-8)}
+.actions{display:grid;gap:var(--space-8)}
+.actions a,.actions button{display:flex;align-items:center;justify-content:center;gap:var(--space-8);min-height:var(--web-compact-row-height);font-size:var(--inspector-type-base);text-decoration:none;color:var(--text);background:var(--surface);border:var(--stroke-1) solid var(--line);border-radius:var(--radius)}
+.actions a:hover,.actions button:hover{background:var(--hover)}
+.actions svg{width:var(--space-16);height:var(--space-16);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* A full-screen button over the game; in full mode it fades so the game shows through. */
+#fullscreen{display:flex;position:fixed;right:max(var(--space-12),env(safe-area-inset-right));bottom:max(var(--space-12),env(safe-area-inset-bottom));z-index:15;align-items:center;gap:var(--space-6);min-height:var(--space-40);padding:0 var(--space-12);font-size:var(--inspector-type-base);font-weight:600;color:var(--ink);background:color-mix(in srgb,var(--inspector-card) calc(var(--alpha-bright) * 100%),transparent);border:var(--stroke-1) solid var(--accent);border-radius:var(--inspector-radius-card);box-shadow:0 var(--web-elevation-sheet-y) var(--web-elevation-sheet-blur) var(--shade-deep);backdrop-filter:blur(var(--space-6))}
+#fullscreen svg{width:var(--space-16);height:var(--space-16);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.full{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}body.full aside{display:none}body.full main{padding:0;background:var(--shadow)}
+body.full .fit{overflow:hidden}body.full .stage.fluid .wb-frame{border:0;border-radius:0}
+body.full #fullscreen{opacity:var(--alpha-scrim)}body.full #fullscreen:hover{opacity:1}
+/* The stage: the frame, sized like the chosen device, with a bezel for handhelds. */
+/* A phone or a narrow window: the sidebar becomes a top strip and the game fills the rest. */
+#menu{display:none}
+#menu svg{width:var(--space-16);height:var(--space-16);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){
+ body{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+ aside{border-right:0;border-bottom:var(--stroke-1) solid var(--line);padding:var(--space-12) var(--space-16);gap:var(--space-12)}
+ aside:not(.collapsed){position:fixed;inset:0;z-index:20;max-height:none;overflow:auto;padding-bottom:max(var(--space-24),env(safe-area-inset-bottom))}
+ aside.collapsed>*:not(h1){display:none}
+ #menu{display:grid;place-items:center;width:var(--inspector-control);height:var(--inspector-control);margin-left:auto}
+ .devices{grid-template-columns:repeat(4,1fr)}.device{grid-template-columns:1fr;text-align:center;justify-items:center;padding:var(--space-8) var(--space-4)}.device svg{grid-row:auto}
+ main{padding:var(--space-8)}.stage.bezel{padding:0;border:0;border-radius:0;box-shadow:none}.stage.bezel .wb-frame{border-radius:var(--radius-4)}
+}
+</style>
+<aside id="side">
+<h1><img src="showcase-icon-256.png" alt="" width="30" height="30"><span>Crash Games <small>PIXIJS · BROWSER BUILDS</small></span><button id="menu" type="button" aria-label="Menu" aria-expanded="true"><i data-icon="menu"></i></button></h1>
+<section class="wb-section"><h2>Game</h2><div class="game-language"><div id="picker"></div><div class="language-row"><span id="language-label">Language</span><div id="language-chips" role="group" aria-labelledby="language-label"><button class="wb-button" type="button" data-language="en" aria-label="English">EN</button><button class="wb-button" type="button" data-language="fr" aria-label="Français">FR</button><button class="wb-button" type="button" data-language="ht" aria-label="Kreyòl ayisyen">CR</button></div></div></div></section>
+<section class="wb-section"><h2>Device</h2><div id="devices"></div><div id="zoom"></div></section>
+<section class="wb-section"><h2>Look</h2><div id="look"></div></section>
+<section class="wb-section"><h2>Navigation</h2><div id="navigation-presets" class="look-row" role="group" aria-label="Navigation preset"></div></section>
+<section class="wb-section" id="panel-options"><h2>Panels the player sees</h2>
+<label class="switch"><input type="checkbox" data-flag="leaderboard" checked>Live wins</label>
+<label class="switch"><input type="checkbox" data-flag="history" checked>Round history</label>
+<label class="switch"><input type="checkbox" data-flag="personal_record" checked>My record</label>
+<label class="switch"><input type="checkbox" data-flag="online_count" checked>Online count</label>
+<label class="switch" data-only="market_stack"><input type="checkbox" data-flag="multiplier_ladder" checked>Multiplier ladder</label>
+</section>
+<section class="wb-section" id="feature-options"><h2>Bet panel features</h2>
+<label class="switch"><input type="checkbox" data-feature="auto" checked>Auto play</label>
+<label class="switch"><input type="checkbox" data-feature="difficulty" checked>Difficulty level</label>
+<label class="switch"><input type="checkbox" data-feature="presets" checked>Preset amounts</label>
+<p class="note">Features are read by the game at start, so changing one reloads it.</p>
+</section>
+<section class="wb-section actions">
+<button id="reload" class="wb-button" type="button"><i data-icon="reload"></i>Restart game</button>
+<a id="open" href="#" target="_blank" rel="noopener"><i data-icon="external"></i>Open full screen</a>
+</section>
+</aside>
+<button id="fullscreen" type="button" aria-label="Full screen"><i data-icon="fullscreen"></i><span>Full screen</span></button>
+<main id="main" class="wb-room"><div class="fit" id="fit"><div class="box" id="box"><div class="stage" id="stage"><iframe id="frame" class="wb-frame" title="Game" src="about:blank"></iframe></div><span id="size" class="wb-size"></span></div></div></main>
+<script>
+(async()=>{
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let GAMES=[
+ {id:'road',title:'Goat Road'},{id:'fruits',title:'Explosive Fruits'},{id:'fish',title:'Fish Master'},
+ {id:'gold',title:'Goat Gold'},{id:'fuel',title:'Fuel Run'},{id:'market_stack',title:'Market Stack'},{id:'catch',title:'Catch Clash'}
+];
+try{
+ const response=await fetch('showcase-settings.json',{cache:'no-store'});
+ if(!response.ok)throw Error('Showcase catalog unavailable');
+ const settings=await response.json();
+ if(!Array.isArray(settings.visible_games))throw Error('Invalid Showcase catalog');
+ GAMES=GAMES.filter(g=>settings.visible_games.includes(g.id));
+}catch{
+ $('#main').textContent='Could not load the game catalog. Please reload the page.';
+ $('#side').hidden=true;$('#fullscreen').hidden=true;return;
+}
+if(!GAMES.length){$('#main').textContent='No games are currently listed in Showcase.';$('#side').hidden=true;$('#fullscreen').hidden=true;return}
+const DEVICES=Workbench.DEVICES;
+const frame=$('#frame'),stage=$('#stage'),side=$('#side');
+let language=new URLSearchParams(location.hash.slice(1)).get('lang')||'en';if(!['en','fr','ht'].includes(language))language='en';
+function syncLanguageChips(){for(const button of $$('[data-language]'))button.setAttribute('aria-pressed',String(button.dataset.language===language))}
+syncLanguageChips();
+let game=GAMES.some(g=>g.id==='gold')?'gold':GAMES[0].id,device='mobile',zoom='fit',brand='default',theme='';
+const presetChoices={'standard':'Game default','menu-drawer-v1':'Menu tabs','tabbed-shell-v1':'Tabs'},gamePresets=new Map();
+const preset=()=>gamePresets.get(game)||(game==='road'?'tabbed-shell-v1':'standard');
+function validControl(n){
+ const shell=preset()!=='standard',key=n.dataset.flag||n.dataset.feature;
+ if(n.dataset.flag)return !shell&&(key!=='multiplier_ladder'||game==='market_stack');
+ if(game==='catch'||game==='road')return false;
+ if(shell&&key!=='presets')return false;
+ return game!=='market_stack'||key==='presets';
+}
+function syncControls(){
+ for(const n of $$('[data-flag],[data-feature]'))n.closest('label').hidden=!validControl(n);
+ for(const id of ['panel-options','feature-options']){const section=$('#'+id);section.hidden=![...section.querySelectorAll('input')].some(validControl)}
+ const container=$('#navigation-presets');container.replaceChildren();
+ for(const [value,label] of Object.entries(presetChoices)){
+  if(game==='road'&&value==='standard')continue;
+  const button=document.createElement('button');button.type='button';button.className='wb-button';button.textContent=label;button.setAttribute('aria-pressed',String(preset()===value));button.dataset.preset=value;
+  button.onclick=()=>{gamePresets.set(game,value);frame.contentWindow?.CrashUI?.instance?.setPresentationPreset(value);syncControls();sendFlags();writeHash()};container.append(button);
+ }
+}
+
+
+// --- state in the address bar, so a link reopens exactly this view -------------------
+function readHash(){
+ const p=new URLSearchParams(location.hash.slice(1));
+ if(GAMES.some(g=>g.id===p.get('game')))game=p.get('game');
+ if(Object.hasOwn(presetChoices,p.get('preset'))&&!(game==='road'&&p.get('preset')==='standard'))gamePresets.set(game,p.get('preset'));
+ if(DEVICES.some(d=>d.id===p.get('device')))device=p.get('device');
+ if(['fit','0.5','0.75','1'].includes(p.get('zoom')))zoom=p.get('zoom');
+ if(p.has('brand'))brand=p.get('brand');
+ if(p.has('theme'))theme=p.get('theme');
+ for(const n of $$('[data-flag],[data-feature]')){const key=n.dataset.flag||n.dataset.feature;if(p.has(key))n.checked=p.get(key)!=='0'}
+}
+function writeHash(){
+ if(full)return;
+ const p=new URLSearchParams({game,device,lang:language});
+ if(zoom!=='fit')p.set('zoom',zoom);
+ p.set('brand',brand);p.set('theme',theme);p.set('preset',preset());
+ for(const n of $$('[data-flag],[data-feature]'))if(validControl(n)&&!n.checked)p.set(n.dataset.flag||n.dataset.feature,'0');
+ if(phoneLike())for(const key of ['presets','personal_record']){const n=$('[data-feature='+key+'],[data-flag='+key+']');if(validControl(n)&&n.checked)p.set(key,'1')}
+ history.replaceState(null,'','#'+p);
+}
+
+// --- the game --------------------------------------------------------------------------
+// The build sizes are written by tools/showcase.py beside the games; without them the rows show only the names.
+const sizes={},revisions={};
+fetch('games.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(list=>{for(const g of list){sizes[g.id]=g.mb;revisions[g.id]=g.revision}fillGames();load()}).catch(()=>{});
+const sizeText=id=>sizes[id]?`${sizes[id]} MB build`:'';
+let picker=null;
+function fillGames(){
+ picker=Workbench.gamePicker({container:$('#picker'),games:GAMES,value:game,thumb:id=>`icons/${id}.png`,subtitle:sizeText,onPick:id=>{game=id;load();if(narrow()){side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false')}}});
+}
+function pickShow(){if(picker){picker.value=game;picker.refresh()}}
+// Presets are named either way: on a phone the kit hides them unless the page asks for them with presets=1.
+const featureQuery=()=>$$('[data-feature]').filter(validControl).map(n=>n.dataset.feature==='presets'?'&presets='+(n.checked?1:0):n.checked?'':'&'+n.dataset.feature+'=0').join('');
+const url=()=>'games/'+game+'/'+(revisions[game]?revisions[game]+'/':'')+'index.html?ui-kit=1&lang='+language+featureQuery()+'&brand='+encodeURIComponent(brand)+'&theme='+encodeURIComponent(theme);
+let lookCatalog=CrashTokens,lookGame='',loadSequence=0;
+const initialLook=new URLSearchParams(location.hash.slice(1));
+let explicitLook=initialLook.has('brand');
+async function load(){
+ const sequence=++loadSequence,requestedGame=game;
+ try{
+  const response=await fetch('games/'+game+'/'+(revisions[game]?revisions[game]+'/':'')+'embed-look.json',{cache:'no-store'});
+  const data=response.ok?await response.json():null;
+  if(sequence!==loadSequence)return;
+  lookCatalog=data?{BRANDS:data.brands,THEMES:data.themes,BRAND_SWATCHES:data.brand_swatches||CrashTokens.BRAND_SWATCHES,THEME_SWATCHES:data.theme_swatches||CrashTokens.THEME_SWATCHES}:CrashTokens;
+  if(!explicitLook){brand=data?.selection?.brand||'default';theme=data?.selection?.theme||''}
+  if(!Object.hasOwn(lookCatalog.BRANDS,brand)){brand=data?.selection?.brand||'default';theme=data?.selection?.theme||''}
+  if(!Object.hasOwn(lookCatalog.THEMES[brand]||{},theme))theme='';
+ }catch{if(sequence!==loadSequence)return;lookCatalog=CrashTokens;if(!Object.hasOwn(lookCatalog.BRANDS,brand)){brand='default';theme=''}}
+ lookGame=requestedGame;buildLook();pickShow();syncControls();
+ // A switch only one game has is shown only for that game.
+ syncControls();
+ $('#open').href=url();writeHash();
+ // Blank first: a game left running would keep its audio going under the next one.
+ frame.src='about:blank';
+ setTimeout(()=>{if(sequence===loadSequence)frame.src=url()},60);
+}
+$('#reload').onclick=load;
+function sendLanguage(){if(frame.src==='about:blank')return;frame.contentWindow?.postMessage({type:'crash-language',locale:language},new URL(frame.src).origin)}
+for(const button of $$('[data-language]'))button.onclick=()=>{language=button.dataset.language;syncLanguageChips();sendLanguage();$('#open').href=url();writeHash()};
+window.addEventListener('message',event=>{if(event.source===frame.contentWindow&&event.origin===new URL(frame.src).origin&&event.data?.type==='crash-language-ready')sendLanguage()});
+let full=false,fullDevice='mobile';
+function setFull(on){
+ full=on;document.body.classList.toggle('full',on);
+ const b=$('#fullscreen');b.setAttribute('aria-label',on?'Minimize':'Full screen');b.querySelector('span').textContent=on?'Minimize':'Full screen';
+ b.querySelector('path').setAttribute('d',on?'M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4':'M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4');
+ if(on){fullDevice=device;device='fluid';size();if(document.documentElement.requestFullscreen&&innerWidth<=760)document.documentElement.requestFullscreen().catch(()=>{})}
+ else{device=fullDevice;size();if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
+}
+$('#fullscreen').onclick=()=>setFull(!full);
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&full)setFull(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&full)setFull(false)});
+$$('[data-feature]').forEach(n=>n.onchange=load);
+// Panels are switched in the running game, as the Composer does, through the kit's own instance.
+function sendFlags(){
+ const ui=frame.contentWindow?.CrashUI?.instance;if(!ui)return;
+ for(const n of $$('[data-flag]').filter(validControl))ui.send('flag',{key:n.dataset.flag,value:n.checked});
+}
+$$('[data-flag]').forEach(n=>n.onchange=()=>{sendFlags();writeHash()});
+frame.addEventListener('load',()=>{
+ // The game's UI appears once its assets have landed; keep asking until it is there.
+ let tries=0;const timer=setInterval(()=>{if(frame.contentWindow?.CrashUI?.instance||++tries>200){clearInterval(timer);frame.contentWindow?.CrashUI?.instance?.setPresentationPreset(preset());syncControls();sendFlags();Workbench.applyLook(frame,{brand,theme})}},100);
+});
+
+// --- the device ------------------------------------------------------------------------
+let devices=null;
+function buildDevices(){devices=Workbench.deviceBar({container:$('#devices'),zoomContainer:$('#zoom'),device,zoom,onChange:v=>{const changed=v.device!==device;device=v.device;zoom=v.zoom;if(changed)phoneDefaults(true);size()}})}
+let look=null;
+function buildLook(){look=Workbench.lookPicker({container:$('#look'),catalogTokens:lookCatalog,brand,theme,onChange:v=>{explicitLook=true;brand=v.brand;theme=v.theme;Workbench.applyLook(frame,{brand,theme});$('#open').href=url();writeHash()}})}
+const theStage=Workbench.stage({fit:$('#fit'),box:$('#box'),stage,frame,size:$('#size')});
+function size(){
+ if(devices){devices.device=device;devices.zoom=zoom}
+ theStage.set({device,zoom});
+ writeHash();
+}
+
+// --- small comforts --------------------------------------------------------------------
+document.addEventListener('keydown',e=>{
+ if(e.target.closest('input,select,textarea')||e.metaKey||e.ctrlKey||e.altKey)return;
+ const n=Number(e.key);if(n>=1&&n<=GAMES.length){game=GAMES[n-1].id;load()}
+ if(e.key==='r')load();
+});
+$('#menu').onclick=()=>{const folded=side.classList.toggle('collapsed');$('#menu').setAttribute('aria-expanded',String(!folded))};
+const narrow=()=>innerWidth<=760||matchMedia('(max-width:760px)').matches;
+// On a phone the menu starts folded and the game fills the screen. The viewport is not
+// always settled when the script runs, so the decision is taken again once it is.
+let folded=false;
+function foldOnPhone(){
+ if(folded||!narrow())return;folded=true;
+ side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false');
+ if(device!=='fluid'){device='fluid';size()}
+ phoneDefaults();
+}
+// The address bar is read first: folding writes it back, and must not lose the game it named.
+readHash();
+fillGames();buildDevices();buildLook();
+// On the phone device the preset amounts and the personal record stay off unless the link names them.
+const PHONE_OFF=['presets','personal_record'];
+// The phone device on a desktop, or any device on an actual phone, where the page itself is narrow.
+const phoneLike=()=>device==='mobile'||narrow();
+function phoneDefaults(force){
+ let reload=false;
+ for(const key of PHONE_OFF){
+  if(!force&&location.hash.includes(key+'='))continue;
+  const n=$('[data-feature='+key+'],[data-flag='+key+']');const want=!phoneLike();
+  if(n.checked===want)continue;n.checked=want;
+  if(n.dataset.feature)reload=true;
+ }
+ if(reload)load();else{sendFlags();writeHash()}
+}
+phoneDefaults();
+foldOnPhone();addEventListener('load',foldOnPhone);addEventListener('resize',foldOnPhone);
+// Picking a game on a phone folds the menu away again, so the game is what is seen.
+
+size();load();
+})();
+</script>
+</html>
