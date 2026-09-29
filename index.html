@@ -6,12 +6,12 @@
 <title>Svyat Games</title>
 <link rel="icon" type="image/png" sizes="64x64" href="showcase-icon-64.png">
 <link rel="apple-touch-icon" href="showcase-icon-180.png">
-<link rel="stylesheet" href="crash-ui/tokens.css?v=6c9d286f">
-<link rel="stylesheet" href="inspector.css?v=6c9d286f">
-<link rel="stylesheet" href="workbench.css?v=6c9d286f">
-<script src="crash-ui/tokens.js?v=6c9d286f"></script>
-<script src="icons.js?v=6c9d286f"></script>
-<script src="workbench.js?v=6c9d286f"></script>
+<link rel="stylesheet" href="crash-ui/tokens.css?v=d2a04d2e7c46">
+<link rel="stylesheet" href="inspector.css?v=d2a04d2e7c46">
+<link rel="stylesheet" href="workbench.css?v=d2a04d2e7c46">
+<script src="crash-ui/tokens.js?v=d2a04d2e7c46"></script>
+<script src="icons.js?v=d2a04d2e7c46"></script>
+<script src="workbench.js?v=d2a04d2e7c46"></script>
 <style>
 /* The games behind the Composer's Layout controls, for looking rather than working:
    pick a game by its icon, pick a device, decide which panels the player sees. Nothing
@@ -84,7 +84,7 @@ body.full #fullscreen{opacity:var(--alpha-scrim)}body.full #fullscreen:hover{opa
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let GAMES=[
  {id:'road',title:'Goat Road'},{id:'boom',title:'Fruit Boom'},{id:'haul',title:'Big Haul'},
- {id:'gold',title:'Goat Gold'},{id:'fuel',title:'Fuel Run'},{id:'market_stack',title:'Market Stack'},{id:'catch',title:'Catch Clash'},{id:'sky_tap_tap',title:'Sky Tap-Tap'},{id:'candy_cascade',title:'Candy Cascade'},{id:'plinko',title:'Plinko'}
+ {id:'gold',title:'Goat Gold'},{id:'fuel',title:'Fuel Run'},{id:'market_stack',title:'Market Stack'},{id:'catch',title:'Catch Clash'},{id:'sky_tap_tap',title:'Sky Tap-Tap'},{id:'candy_cascade',title:'Candy Cascade'},{id:'plinko',title:'Plinko'},{id:'mopyon_cascades',title:'Mòpyon Cascades'}
 ];
 // Which games are listed is chosen by an admin in Composer and read live from Composer Cloud,
 // so a change shows without a deploy. The public publishable key is the one in
