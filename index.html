@@ -6,12 +6,12 @@
 <title>Svyat Games</title>
 <link rel="icon" type="image/png" sizes="64x64" href="showcase-icon-64.png">
 <link rel="apple-touch-icon" href="showcase-icon-180.png">
-<link rel="stylesheet" href="crash-ui/tokens.css?v=5517ba35b02d">
-<link rel="stylesheet" href="inspector.css?v=5517ba35b02d">
-<link rel="stylesheet" href="workbench.css?v=5517ba35b02d">
-<script src="crash-ui/tokens.js?v=5517ba35b02d"></script>
-<script src="icons.js?v=5517ba35b02d"></script>
-<script src="workbench.js?v=5517ba35b02d"></script>
+<link rel="stylesheet" href="crash-ui/tokens.css?v=cf1579c8ebcd">
+<link rel="stylesheet" href="inspector.css?v=cf1579c8ebcd">
+<link rel="stylesheet" href="workbench.css?v=cf1579c8ebcd">
+<script src="crash-ui/tokens.js?v=cf1579c8ebcd"></script>
+<script src="icons.js?v=cf1579c8ebcd"></script>
+<script src="workbench.js?v=cf1579c8ebcd"></script>
 <style>
 /* The games behind the Composer's Layout controls, for looking rather than working:
    pick a game by its icon, pick a device, decide which panels the player sees. Nothing
@@ -58,19 +58,6 @@ body.full #fullscreen{opacity:var(--alpha-scrim)}body.full #fullscreen:hover{opa
 <section class="wb-section"><h2>Device</h2><div id="devices"></div><div id="zoom"></div></section>
 <section class="wb-section"><h2>Look</h2><div id="look"></div></section>
 <section class="wb-section"><h2>Navigation</h2><div id="navigation-presets" class="look-row" role="group" aria-label="Navigation preset"></div></section>
-<section class="wb-section" id="panel-options"><h2>Panels the player sees</h2>
-<label class="switch"><input type="checkbox" data-flag="leaderboard" checked>Live wins</label>
-<label class="switch"><input type="checkbox" data-flag="history" checked>Round history</label>
-<label class="switch"><input type="checkbox" data-flag="personal_record" checked>My record</label>
-<label class="switch"><input type="checkbox" data-flag="online_count" checked>Online count</label>
-<label class="switch" data-only="market_stack"><input type="checkbox" data-flag="multiplier_ladder" checked>Multiplier ladder</label>
-</section>
-<section class="wb-section" id="feature-options"><h2>Bet panel features</h2>
-<label class="switch"><input type="checkbox" data-feature="auto" checked>Auto play</label>
-<label class="switch"><input type="checkbox" data-feature="difficulty" checked>Difficulty level</label>
-<label class="switch"><input type="checkbox" data-feature="presets" checked>Preset amounts</label>
-<p class="note">Features are read by the game at start, so changing one reloads it.</p>
-</section>
 <section class="wb-section actions">
 <button id="reload" class="wb-button" type="button"><i data-icon="reload"></i>Restart game</button>
 <a id="open" href="#" target="_blank" rel="noopener"><i data-icon="external"></i>Open full screen</a>
@@ -117,23 +104,15 @@ let language=new URLSearchParams(location.hash.slice(1)).get('lang')||'en';if(![
 function syncLanguageChips(){for(const button of $$('[data-language]'))button.setAttribute('aria-pressed',String(button.dataset.language===language))}
 syncLanguageChips();
 let game=GAMES.some(g=>g.id==='gold')?'gold':GAMES[0].id,device='mobile',zoom='fit',brand='default',theme='';
-const presetChoices={'standard':'Game default','menu-drawer-v1':'Menu tabs','tabbed-shell-v1':'Tabs'},gamePresets=new Map();
-const preset=()=>gamePresets.get(game)||(game==='road'?'tabbed-shell-v1':'standard');
-function validControl(n){
- const shell=preset()!=='standard',key=n.dataset.flag||n.dataset.feature;
- if(n.dataset.flag)return !shell&&(key!=='multiplier_ladder'||game==='market_stack');
- if(game==='catch'||game==='road')return false;
- if(shell&&key!=='presets')return false;
- return game!=='market_stack'||key==='presets';
-}
+// Every game is shown in one of the two tabbed layouts, Tabs by default. The kit's classic
+// "Game default" panel is not offered, nor its panel and feature switches, which only it read.
+const presetChoices={'menu-drawer-v1':'Menu tabs','tabbed-shell-v1':'Tabs'},gamePresets=new Map();
+const preset=()=>gamePresets.get(game)||'tabbed-shell-v1';
 function syncControls(){
- for(const n of $$('[data-flag],[data-feature]'))n.closest('label').hidden=!validControl(n);
- for(const id of ['panel-options','feature-options']){const section=$('#'+id);section.hidden=![...section.querySelectorAll('input')].some(validControl)}
  const container=$('#navigation-presets');container.replaceChildren();
  for(const [value,label] of Object.entries(presetChoices)){
-  if(game==='road'&&value==='standard')continue;
   const button=document.createElement('button');button.type='button';button.className='wb-button';button.textContent=label;button.setAttribute('aria-pressed',String(preset()===value));button.dataset.preset=value;
-  button.onclick=()=>{gamePresets.set(game,value);frame.contentWindow?.CrashUI?.instance?.setPresentationPreset(value);syncControls();sendFlags();writeHash()};container.append(button);
+  button.onclick=()=>{gamePresets.set(game,value);frame.contentWindow?.CrashUI?.instance?.setPresentationPreset(value);syncControls();writeHash()};container.append(button);
  }
 }
 
@@ -142,36 +121,33 @@ function syncControls(){
 function readHash(){
  const p=new URLSearchParams(location.hash.slice(1));
  if(GAMES.some(g=>g.id===p.get('game')))game=p.get('game');
- if(Object.hasOwn(presetChoices,p.get('preset'))&&!(game==='road'&&p.get('preset')==='standard'))gamePresets.set(game,p.get('preset'));
+ if(Object.hasOwn(presetChoices,p.get('preset')))gamePresets.set(game,p.get('preset'));
  if(DEVICES.some(d=>d.id===p.get('device')))device=p.get('device');
  if(['fit','0.5','0.75','1'].includes(p.get('zoom')))zoom=p.get('zoom');
  if(p.has('brand'))brand=p.get('brand');
  if(p.has('theme'))theme=p.get('theme');
- for(const n of $$('[data-flag],[data-feature]')){const key=n.dataset.flag||n.dataset.feature;if(p.has(key))n.checked=p.get(key)!=='0'}
 }
 function writeHash(){
  if(full)return;
  const p=new URLSearchParams({game,device,lang:language});
  if(zoom!=='fit')p.set('zoom',zoom);
  p.set('brand',brand);p.set('theme',theme);p.set('preset',preset());
- for(const n of $$('[data-flag],[data-feature]'))if(validControl(n)&&!n.checked)p.set(n.dataset.flag||n.dataset.feature,'0');
- if(phoneLike())for(const key of ['presets','personal_record']){const n=$('[data-feature='+key+'],[data-flag='+key+']');if(validControl(n)&&n.checked)p.set(key,'1')}
  history.replaceState(null,'','#'+p);
 }
 
 // --- the game --------------------------------------------------------------------------
-// The build sizes are written by tools/showcase.py beside the games; without them the rows show only the names.
-const sizes={},revisions={};
-fetch('games.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(list=>{for(const g of list){sizes[g.id]=g.mb;revisions[g.id]=g.revision}fillGames();load()}).catch(()=>{});
-const sizeText=id=>sizes[id]?`${sizes[id]} MB build`:'';
+// Each game's last change is written by the release beside the games; without it the rows show only the names.
+const updated={},revisions={};
+fetch('games.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(list=>{for(const g of list){updated[g.id]=g.updated;revisions[g.id]=g.revision}fillGames();load()}).catch(()=>{});
+// YYYY-MM-DD shown as written (no time zone to shift it a day), month by name: "Updated 29 Sep 2026".
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const changedText=id=>{const d=/^(\d{4})-(\d{2})-(\d{2})$/.exec(updated[id]||'');return d?`Updated ${+d[3]} ${MONTHS[d[2]-1]} ${d[1]}`:''};
 let picker=null;
 function fillGames(){
- picker=Workbench.gamePicker({container:$('#picker'),games:GAMES,value:game,thumb:id=>`icons/${id}.png`,subtitle:sizeText,onPick:id=>{game=id;load();if(narrow()){side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false')}}});
+ picker=Workbench.gamePicker({container:$('#picker'),games:GAMES,value:game,thumb:id=>`icons/${id}.png`,subtitle:changedText,onPick:id=>{game=id;load();if(narrow()){side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false')}}});
 }
 function pickShow(){if(picker){picker.value=game;picker.refresh()}}
-// Presets are named either way: on a phone the kit hides them unless the page asks for them with presets=1.
-const featureQuery=()=>$$('[data-feature]').filter(validControl).map(n=>n.dataset.feature==='presets'?'&presets='+(n.checked?1:0):n.checked?'':'&'+n.dataset.feature+'=0').join('');
-const url=()=>'games/'+game+'/'+(revisions[game]?revisions[game]+'/':'')+'index.html?ui-kit=1&lang='+language+featureQuery()+'&brand='+encodeURIComponent(brand)+'&theme='+encodeURIComponent(theme);
+const url=()=>'games/'+game+'/'+(revisions[game]?revisions[game]+'/':'')+'index.html?ui-kit=1&lang='+language+'&brand='+encodeURIComponent(brand)+'&theme='+encodeURIComponent(theme);
 let lookCatalog=CrashTokens,lookGame='',loadSequence=0;
 const initialLook=new URLSearchParams(location.hash.slice(1));
 let explicitLook=initialLook.has('brand');
@@ -209,21 +185,14 @@ function setFull(on){
 $('#fullscreen').onclick=()=>setFull(!full);
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&full)setFull(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&full)setFull(false)});
-$$('[data-feature]').forEach(n=>n.onchange=load);
-// Panels are switched in the running game, as the Composer does, through the kit's own instance.
-function sendFlags(){
- const ui=frame.contentWindow?.CrashUI?.instance;if(!ui)return;
- for(const n of $$('[data-flag]').filter(validControl))ui.send('flag',{key:n.dataset.flag,value:n.checked});
-}
-$$('[data-flag]').forEach(n=>n.onchange=()=>{sendFlags();writeHash()});
 frame.addEventListener('load',()=>{
  // The game's UI appears once its assets have landed; keep asking until it is there.
- let tries=0;const timer=setInterval(()=>{if(frame.contentWindow?.CrashUI?.instance||++tries>200){clearInterval(timer);frame.contentWindow?.CrashUI?.instance?.setPresentationPreset(preset());syncControls();sendFlags();Workbench.applyLook(frame,{brand,theme})}},100);
+ let tries=0;const timer=setInterval(()=>{if(frame.contentWindow?.CrashUI?.instance||++tries>200){clearInterval(timer);frame.contentWindow?.CrashUI?.instance?.setPresentationPreset(preset());syncControls();Workbench.applyLook(frame,{brand,theme})}},100);
 });
 
 // --- the device ------------------------------------------------------------------------
 let devices=null;
-function buildDevices(){devices=Workbench.deviceBar({container:$('#devices'),zoomContainer:$('#zoom'),device,zoom,onChange:v=>{const changed=v.device!==device;device=v.device;zoom=v.zoom;if(changed)phoneDefaults(true);size()}})}
+function buildDevices(){devices=Workbench.deviceBar({container:$('#devices'),zoomContainer:$('#zoom'),device,zoom,onChange:v=>{device=v.device;zoom=v.zoom;size()}})}
 let look=null;
 function buildLook(){look=Workbench.lookPicker({container:$('#look'),catalogTokens:lookCatalog,brand,theme,onChange:v=>{explicitLook=true;brand=v.brand;theme=v.theme;Workbench.applyLook(frame,{brand,theme});$('#open').href=url();writeHash()}})}
 const theStage=Workbench.stage({fit:$('#fit'),box:$('#box'),stage,frame,size:$('#size')});
@@ -248,26 +217,10 @@ function foldOnPhone(){
  if(folded||!narrow())return;folded=true;
  side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false');
  if(device!=='fluid'){device='fluid';size()}
- phoneDefaults();
 }
 // The address bar is read first: folding writes it back, and must not lose the game it named.
 readHash();
 fillGames();buildDevices();buildLook();
-// On the phone device the preset amounts and the personal record stay off unless the link names them.
-const PHONE_OFF=['presets','personal_record'];
-// The phone device on a desktop, or any device on an actual phone, where the page itself is narrow.
-const phoneLike=()=>device==='mobile'||narrow();
-function phoneDefaults(force){
- let reload=false;
- for(const key of PHONE_OFF){
-  if(!force&&location.hash.includes(key+'='))continue;
-  const n=$('[data-feature='+key+'],[data-flag='+key+']');const want=!phoneLike();
-  if(n.checked===want)continue;n.checked=want;
-  if(n.dataset.feature)reload=true;
- }
- if(reload)load();else{sendFlags();writeHash()}
-}
-phoneDefaults();
 foldOnPhone();addEventListener('load',foldOnPhone);addEventListener('resize',foldOnPhone);
 // Picking a game on a phone folds the menu away again, so the game is what is seen.
 
