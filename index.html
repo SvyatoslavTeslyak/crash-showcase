@@ -6,12 +6,14 @@
 <title>Showcase</title>
 <link rel="icon" type="image/png" sizes="64x64" href="showcase-icon-64.png">
 <link rel="apple-touch-icon" href="showcase-icon-180.png">
-<link rel="stylesheet" href="crash-ui/tokens.css?v=2b513e68ec29">
-<link rel="stylesheet" href="inspector.css?v=2b513e68ec29">
-<link rel="stylesheet" href="workbench.css?v=2b513e68ec29">
-<script src="crash-ui/tokens.js?v=2b513e68ec29"></script>
-<script src="icons.js?v=2b513e68ec29"></script>
-<script src="workbench.js?v=2b513e68ec29"></script>
+<link rel="stylesheet" href="crash-ui/tokens.css?v=9550ae744088">
+<link rel="stylesheet" href="inspector.css?v=9550ae744088">
+<link rel="stylesheet" href="theme-light.css">
+<link rel="stylesheet" href="workbench.css?v=9550ae744088">
+<script src="crash-ui/tokens.js?v=9550ae744088"></script>
+<script src="icons.js?v=9550ae744088"></script>
+<script src="appearance.js"></script>
+<script src="workbench.js?v=9550ae744088"></script>
 <style>
 /* The games behind the Composer's Layout controls, for looking rather than working:
    pick a game by its icon, pick a device, decide which panels the player sees. Nothing
@@ -46,6 +48,7 @@ body.full #fullscreen{opacity:var(--alpha-scrim)}body.full #fullscreen:hover{opa
 /* The stage: the frame, sized like the chosen device, with a bezel for handhelds. */
 /* A phone or a narrow window: the sidebar becomes a top strip and the game fills the rest. */
 #menu{display:none}
+#appearance{display:grid;place-items:center;width:var(--inspector-control);height:var(--inspector-control);margin-left:auto;padding:0;border:var(--stroke-1) solid var(--line);border-radius:var(--radius);background:var(--surface);color:var(--muted)}#appearance:hover{color:var(--text)}#appearance + #menu{margin-left:var(--space-8)!important}
 #menu svg{width:var(--space-16);height:var(--space-16);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:760px){
  body{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
@@ -58,7 +61,7 @@ body.full #fullscreen{opacity:var(--alpha-scrim)}body.full #fullscreen:hover{opa
 }
 </style>
 <aside id="side">
-<h1><img src="showcase-icon-256.png" alt="" width="30" height="30"><span>Showcase <small>PIXIJS · BROWSER BUILDS</small></span><button id="menu" type="button" aria-label="Menu" aria-expanded="true"><i data-icon="menu"></i></button></h1>
+<h1><img src="showcase-icon-256.png" alt="" width="30" height="30"><span>Showcase <small>PIXIJS · BROWSER BUILDS</small></span><button id="appearance" type="button" data-appearance-toggle><span data-appearance-icon></span></button><button id="menu" type="button" aria-label="Menu" aria-expanded="true"><i data-icon="menu"></i></button></h1>
 <section class="wb-section"><h2>Game</h2><div class="game-language"><div id="picker"></div><div class="language-row"><span id="language-label">Language</span><div id="language-chips" role="group" aria-labelledby="language-label"><button class="wb-button" type="button" data-language="en" aria-label="English">EN</button><button class="wb-button" type="button" data-language="fr" aria-label="Français">FR</button><button class="wb-button" type="button" data-language="ht" aria-label="Kreyòl ayisyen">CR</button></div></div></div></section>
 <section class="wb-section"><h2>Device</h2><div id="devices"></div><div id="zoom"></div></section>
 <section class="wb-section"><h2>Look</h2><div id="look"></div></section>
