@@ -6,14 +6,14 @@
 <title>Showcase</title>
 <link rel="icon" type="image/png" sizes="64x64" href="showcase-icon-64.png">
 <link rel="apple-touch-icon" href="showcase-icon-180.png">
-<link rel="stylesheet" href="crash-ui/tokens.css?v=66acd606d13f">
-<link rel="stylesheet" href="inspector.css?v=66acd606d13f">
-<link rel="stylesheet" href="theme-light.css?v=66acd606d13f">
-<link rel="stylesheet" href="workbench.css?v=66acd606d13f">
-<script src="crash-ui/tokens.js?v=66acd606d13f"></script>
-<script src="icons.js?v=66acd606d13f"></script>
-<script src="appearance.js?v=66acd606d13f"></script>
-<script src="workbench.js?v=66acd606d13f"></script>
+<link rel="stylesheet" href="crash-ui/tokens.css?v=8882b5f8b4e0">
+<link rel="stylesheet" href="inspector.css?v=8882b5f8b4e0">
+<link rel="stylesheet" href="theme-light.css?v=8882b5f8b4e0">
+<link rel="stylesheet" href="workbench.css?v=8882b5f8b4e0">
+<script src="crash-ui/tokens.js?v=8882b5f8b4e0"></script>
+<script src="icons.js?v=8882b5f8b4e0"></script>
+<script src="appearance.js?v=8882b5f8b4e0"></script>
+<script src="workbench.js?v=8882b5f8b4e0"></script>
 <style>
 /* The games behind the Composer's Layout controls, for looking rather than working:
    pick a game by its icon, pick a device, decide which panels the player sees. Nothing
@@ -79,8 +79,13 @@ body.full #fullscreen{opacity:var(--alpha-scrim)}body.full #fullscreen:hover{opa
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let GAMES=[
  {id:'road',title:'Goat Road'},{id:'boom',title:'Fruit Boom'},{id:'haul',title:'Big Haul'},
- {id:'gold',title:'Goat Gold'},{id:'fuel',title:'Fuel Run'},{id:'market_stack',title:'Market Stack'},{id:'catch',title:'Catch Clash'},{id:'sky_tap_tap',title:'Sky Tap-Tap'},{id:'candy_cascade',title:'Candy Cascade'},{id:'plinko',title:'Plinko'},{id:'mopyon_cascades',title:'Mòpyon Cascades'}
+ {id:'gold',title:'Goat Gold'},{id:'fuel',title:'Fuel Run'},{id:'market_stack',title:'Market Stack'},{id:'catch',title:'Catch Clash'},{id:'sky_tap_tap',title:'Sky Tap-Tap'},{id:'candy_cascade',title:'Candy Cascade'},{id:'plinko',title:'Plinko'},{id:'mopyon_cascades',title:'Mòpyon Cascades'},
+ // The same builds with their debug panel (?debug=1), to pick what the next spin plays. Listed
+ // whenever the game itself is.
+ {id:'candy_cascade_debug',title:'Candy Cascade · Debug',of:'candy_cascade',query:'debug=1'},{id:'mopyon_cascades_debug',title:'Mòpyon Cascades · Debug',of:'mopyon_cascades',query:'debug=1'}
 ];
+/** The build an entry plays: a debug entry plays its game's. */
+const buildOf=id=>GAMES.find(g=>g.id===id)?.of||id;
 // Which games are listed is chosen by an admin in Composer and read live from Composer Cloud,
 // so a change shows without a deploy. The public publishable key is the one in
 // cloud-config.js (tests keep them equal). Without the database the published
@@ -100,7 +105,7 @@ async function visibleGames(){
 }
 try{
  const visible=await visibleGames();
- GAMES=GAMES.filter(g=>visible.includes(g.id));
+ GAMES=GAMES.filter(g=>visible.includes(g.of||g.id));
 }catch{
  $('#main').textContent='Could not load the game catalog. Please reload the page.';
  $('#side').hidden=true;$('#fullscreen').hidden=true;return;
@@ -149,20 +154,20 @@ const updated={},revisions={};
 fetch('games.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(list=>{for(const g of list){updated[g.id]=g.updated;revisions[g.id]=g.revision}fillGames();load()}).catch(()=>{});
 // YYYY-MM-DD shown as written (no time zone to shift it a day), month by name: "Updated 29 Sep 2026".
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const changedText=id=>{const d=/^(\d{4})-(\d{2})-(\d{2})$/.exec(updated[id]||'');return d?`Updated ${+d[3]} ${MONTHS[d[2]-1]} ${d[1]}`:''};
+const changedText=id=>{const d=/^(\d{4})-(\d{2})-(\d{2})$/.exec(updated[buildOf(id)]||'');return d?`Updated ${+d[3]} ${MONTHS[d[2]-1]} ${d[1]}`:''};
 let picker=null;
 function fillGames(){
- picker=Workbench.gamePicker({container:$('#picker'),games:GAMES,value:game,thumb:id=>`icons/${id}.png`,subtitle:changedText,onPick:id=>{game=id;load();if(narrow()){side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false')}}});
+ picker=Workbench.gamePicker({container:$('#picker'),games:GAMES,value:game,thumb:id=>`icons/${buildOf(id)}.png`,subtitle:changedText,onPick:id=>{game=id;load();if(narrow()){side.classList.add('collapsed');$('#menu').setAttribute('aria-expanded','false')}}});
 }
 function pickShow(){if(picker){picker.value=game;picker.refresh()}}
-const url=()=>'games/'+game+'/'+(revisions[game]?revisions[game]+'/':'')+'index.html?ui-kit=1&lang='+language+'&brand='+encodeURIComponent(brand)+'&theme='+encodeURIComponent(theme);
+const url=()=>{const build=buildOf(game),extra=GAMES.find(g=>g.id===game)?.query;return 'games/'+build+'/'+(revisions[build]?revisions[build]+'/':'')+'index.html?ui-kit=1&lang='+language+'&brand='+encodeURIComponent(brand)+'&theme='+encodeURIComponent(theme)+(extra?'&'+extra:'')};
 let lookCatalog=CrashTokens,lookGame='',loadSequence=0;
 const initialLook=new URLSearchParams(location.hash.slice(1));
 let explicitLook=initialLook.has('brand');
 async function load(){
  const sequence=++loadSequence,requestedGame=game;
  try{
-  const response=await fetch('games/'+game+'/'+(revisions[game]?revisions[game]+'/':'')+'embed-look.json',{cache:'no-store'});
+  const build=buildOf(game),response=await fetch('games/'+build+'/'+(revisions[build]?revisions[build]+'/':'')+'embed-look.json',{cache:'no-store'});
   const data=response.ok?await response.json():null;
   if(sequence!==loadSequence)return;
   lookCatalog=data?{BRANDS:data.brands,THEMES:data.themes,BRAND_SWATCHES:data.brand_swatches||CrashTokens.BRAND_SWATCHES,THEME_SWATCHES:data.theme_swatches||CrashTokens.THEME_SWATCHES}:CrashTokens;
